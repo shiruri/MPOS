@@ -43,7 +43,7 @@ public class login {
           if(hashedPassword.equals(passwordHash)) {
             CurrentUser user = new CurrentUser();
             
-            String sqlSetCurrentUser = "select username from staffandadmin where id = ?;";  
+            String sqlSetCurrentUser = "select username,role from staffandadmin where id = ?;";  
             String sqlSetCurrentMachine = "select name,location from machines where name = ?;";  
             
             PreparedStatement stat = con.prepareCall(sqlSetCurrentUser);
@@ -57,7 +57,9 @@ public class login {
             while(result.next()) {
                 
                 String username = result.getString("username");
+                String role = result.getString("role");
             user.setCurrentUserName(username);
+            user.setCurrentRole(role);
             
            }
             
@@ -85,7 +87,7 @@ public class login {
             
             updateStatus.setString(1, id);
             
-            CurrentUser userLog= new CurrentUser(user.getCurrentUserName(),user.getCurrentUserID(),user.getCurrentMachine(),user.getCurrentLocation());
+            CurrentUser userLog= new CurrentUser(user.getCurrentUserName(),user.getCurrentUserID(),user.getCurrentMachine(),user.getCurrentLocation(),user.getCurrentRole());
             String filename = "log.txt";
             FileOutputStream file = new FileOutputStream(filename);
             ObjectOutputStream out = new ObjectOutputStream(file);

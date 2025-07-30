@@ -448,9 +448,9 @@ public class Machine extends javax.swing.JFrame {
                             .addComponent(SubTotal1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(TotalAmountText1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(discountField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(TotalAmountText)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(TotalAmountText)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1138,7 +1138,7 @@ public class Machine extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         if (TransactionsTable.getRowCount() <= 0) {
-            JOptionPane.showMessageDialog(this, "No Orders");
+            JOptionPane.showMessageDialog(null, "No Orders");
         } else {
             int choice = JOptionPane.showConfirmDialog(
                     null,
@@ -1151,7 +1151,6 @@ public class Machine extends javax.swing.JFrame {
 
                 double subTotal = prods.getTotal();
 
-                System.out.println("SubTotal: " + subTotal);
                 String strDisc = discountField.getText();
                 DecimalFormat df = new DecimalFormat("#.00");
                 double totalWithTax = (subTotal * 0.12) + subTotal;
@@ -1181,7 +1180,7 @@ public class Machine extends javax.swing.JFrame {
         try {
 
             if (TransactionsTable.getRowCount() <= 0) {
-                JOptionPane.showMessageDialog(this, "No Orders");
+                JOptionPane.showMessageDialog(null, "No Orders");
             } else {
                 int choice = JOptionPane.showConfirmDialog(
                         null,
@@ -1284,7 +1283,7 @@ public class Machine extends javax.swing.JFrame {
             revalidate();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(productPanel, "Error Retrieving Data");
+            JOptionPane.showMessageDialog(null, "Error Retrieving Data");
         }
 
     }//GEN-LAST:event_ItemsTableComponentShown
@@ -1327,7 +1326,7 @@ public class Machine extends javax.swing.JFrame {
             revalidate();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(productPanel, "Error Retrieving Data");
+            JOptionPane.showMessageDialog(null, "Error Retrieving Data");
         }
 
         // TODO add your handling code here:
@@ -1335,7 +1334,7 @@ public class Machine extends javax.swing.JFrame {
 
     private void RefreshItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshItem3ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(productPanel, addItem);
+        JOptionPane.showMessageDialog(null, addItem);
     }//GEN-LAST:event_RefreshItem3ActionPerformed
 
     private void addItemsComboBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemsComboBoxMouseClicked
@@ -1439,7 +1438,6 @@ public class Machine extends javax.swing.JFrame {
 
                     if (moew.containsKey(id)) {
                         int quantityOfItem = quantity - moew.get(id);
-                        System.out.println("Quantity: " + quantityOfItem);
                         if (quantityProd <= quantityOfItem) {
                             Product products = new Product(id, names, category, quantityProd, price);
                             Product recieptTake = new Product(names, quantityProd, price);
@@ -1449,7 +1447,6 @@ public class Machine extends javax.swing.JFrame {
                             totals.add(sum);
                            
                             c.addMap(id,quantityProd);
-                            System.out.println("Prds: "+quantityProds);
                             c.setTotalQuantity(quantityProds);
                             c.setTotal(totals);
                             recieptTaker.add(recieptTake);
@@ -1486,7 +1483,7 @@ public class Machine extends javax.swing.JFrame {
                             }
 
                         } else {
-                            JOptionPane.showMessageDialog(Payment, "Invalid Quantity");
+                            JOptionPane.showMessageDialog(null, "Invalid Quantity");
 
                         }
                     } else {
@@ -1537,19 +1534,19 @@ public class Machine extends javax.swing.JFrame {
                     }
 
                 } else {
-                    JOptionPane.showMessageDialog(productPanel, "Invalid Amount");
+                    JOptionPane.showMessageDialog(null, "Invalid Amount");
 
                 }
 
             } else {
-                JOptionPane.showMessageDialog(productPanel, "Unable To Add Product (No Stock)");
+                JOptionPane.showMessageDialog(null, "Unable To Add Product (No Stock)");
 
             }
 
             repaint();
             revalidate();
         } catch (Exception e) {
-            System.out.println("Error: " + e);
+           
         }
 
 
@@ -1583,7 +1580,7 @@ public class Machine extends javax.swing.JFrame {
         // TODO add your handling code here:
         changeField.setText(" ");
         completeTransactionButton.setEnabled(true);
-        JOptionPane.showMessageDialog(Payment, Payment);
+        JOptionPane.showMessageDialog(null, Payment);
 
 
     }//GEN-LAST:event_PaymentButtonActionPerformed
@@ -1605,7 +1602,7 @@ public class Machine extends javax.swing.JFrame {
             NumberFormat formatter = new DecimalFormat("#0.00");
             changeField.setText("Change: " + formatter.format(change));
         } else {
-            JOptionPane.showMessageDialog(Payment, "Invalid Amount");
+            JOptionPane.showMessageDialog(null, "Invalid Amount");
         }
 
         repaint();
@@ -1624,7 +1621,7 @@ public class Machine extends javax.swing.JFrame {
             double paymentParsed = Double.parseDouble(paymentRecieved);
             double total = Double.parseDouble(totalAmount);
             if (paymentParsed < total) {
-                JOptionPane.showMessageDialog(Payment, "Invalid Amount");
+                JOptionPane.showMessageDialog(null, "Invalid Amount");
             } else {
                 String filename = "log.txt";
                 CurrentUser currentUser = null;
@@ -1691,7 +1688,7 @@ public class Machine extends javax.swing.JFrame {
                     LocalDateTime currentDatee = LocalDateTime.now();
                     DateTimeFormatter formats = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     Random rand = new Random();
-                    String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
                     String randString = "";
                     for(int i = 0; i < 5; i++) {
                     char letter = abc.charAt(rand.nextInt(abc.length()));
@@ -1703,12 +1700,12 @@ public class Machine extends javax.swing.JFrame {
                      
                   
                   String recieptHeader= "                           MPOS                           \n"
-                                      + ""+currentUser.getCurrentMachine()+"                       \n"
-                                      + ""+currentUser.getCurrentLocation()+"                      \n"
-                                      + ""+currentUser.getCurrentUserID()+"           `            \n"
-                                      + ""+randString+"           `                                \n"
+                                      + "                       "+currentUser.getCurrentMachine()+"                       \n"
+                                      + "                       "+currentUser.getCurrentLocation()+"                      \n"
+                                      + "                       "+currentUser.getCurrentUserID()+"           `            \n"
+                                      + "                       "+randString+"           `                                \n"
                                       + "                                                          \n"
-                                      + "                         Sales Invoice                    \n"
+                                      + "                      Sales Invoice                       \n"
                                       + "Cashier: " + currentUser.getCurrentUserName()+"           \n"
                                       + "==========================================================\n"
                                       + "Date: "+datee+"                                           \n"
@@ -1729,9 +1726,9 @@ public class Machine extends javax.swing.JFrame {
                                       + "VATABLE SALES:                               "+VatabeSaleFinal+"\n"
                                       + "VAT AMT:                                     "+taxAMT+"   \n"
                                       + "==========================================================\n"
-                                      + "TOTAL:                                  PHP "+totalTotal+"\n"
-                                      + "Cash:                                     "+custPayement+"\n"
-                                      + "Change:                                     "+custChange+"\n"
+                                      + "TOTAL:                                    PHP "+totalTotal+"\n"
+                                      + "Cash:                                         "+custPayement+"\n"
+                                      + "Change:                                   "+custChange+"\n"
                                       + "==========================================================\n"
                                       + "Cust Name:_______________________________________________ \n"
                                       + "  Address:_______________________________________________ \n"
@@ -1761,11 +1758,12 @@ public class Machine extends javax.swing.JFrame {
                         
                         filem.write(productsList);
                     }
+                    recieptTaker.clear();
              
                     filem.write(recieptBody);
                     
                     
-                    JOptionPane.showMessageDialog(Payment, "Reciept Made!");
+                    JOptionPane.showMessageDialog(null, "Reciept Made!");
                     filem.close();
 
                     
@@ -1790,7 +1788,7 @@ public class Machine extends javax.swing.JFrame {
                 TotalAmountText.setText("TotalAmount");
                 RefreshItem3.setEnabled(true);
                 PaymentRecievedField.setText(" ");
-                JOptionPane.showMessageDialog(Payment, "Transaction Completed!");
+                JOptionPane.showMessageDialog(null, "Transaction Completed!");
                 RefreshItem3.setEnabled(true);
                 PaymentButton.setEnabled(false);
                 completeTransactionButton.setEnabled(false);
@@ -1801,7 +1799,6 @@ public class Machine extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error Uploading data" + e);
         }
 
 
@@ -1935,7 +1932,7 @@ public class Machine extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error Retrieving data");
+            JOptionPane.showMessageDialog(null, "Error Retrieving data");
         }
 
     }//GEN-LAST:event_RefreshTransactionsActionPerformed
@@ -2008,7 +2005,7 @@ public class Machine extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(Payment, "Error: "+e );
+            JOptionPane.showMessageDialog(null, "Error: " );
         }
     }//GEN-LAST:event_RefreshTransactions1ActionPerformed
 

@@ -7,16 +7,26 @@ import javax.swing.JOptionPane;
 public class CurrentUser implements Serializable {
     
 
-    public CurrentUser(String currentUserName, String currentUserID, String currentMachine, String currentLocation) {
+    public CurrentUser(String currentUserName, String currentUserID, String currentMachine, String currentLocation,String currentRole) {
         this.currentUserName = currentUserName;
         this.currentUserID = currentUserID;
         this.currentMachine = currentMachine;
         this.currentLocation = currentLocation;
+        this.currentRole = currentRole;
     }
     private String currentUserName;
     private String currentUserID;
     private String currentMachine;
     private String currentLocation;
+    private String currentRole;
+
+    public String getCurrentRole() {
+        return currentRole;
+    }
+
+    public void setCurrentRole(String currentRole) {
+        this.currentRole = currentRole;
+    }
     
 
     public CurrentUser() {

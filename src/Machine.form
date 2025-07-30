@@ -519,9 +519,9 @@
                                           <Component id="SubTotal1" alignment="0" max="32767" attributes="0"/>
                                           <Component id="TotalAmountText1" alignment="0" max="32767" attributes="0"/>
                                           <Component id="discountField" alignment="0" pref="93" max="32767" attributes="0"/>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="TotalAmountText" min="-2" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
                                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                              <Component id="TotalAmountText" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>

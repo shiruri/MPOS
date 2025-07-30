@@ -40,6 +40,10 @@ public class Menu extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton2 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
         parentPane = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -56,6 +60,53 @@ public class Menu extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         jButton2.setText("jButton2");
+
+        jLabel6.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
+        jLabel6.setText("Please select panel to log");
+
+        jComboBox1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin Dashboard", "View Pos Machine" }));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap(121, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(124, 124, 124))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(78, 78, 78))))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addGap(64, 64, 64)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(112, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(java.awt.SystemColor.activeCaptionBorder);
@@ -324,28 +375,43 @@ public class Menu extends javax.swing.JFrame {
                     while(rs.next()) {
                         role = rs.getString("role");
                     }
-                    if(role.equalsIgnoreCase("Admin") ||role.equalsIgnoreCase("Staff")  ) {
+                    if (role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Staff")) {
+                        JOptionPane.showMessageDialog(null, "Log in succesfull");
+
+                        JOptionPane.showMessageDialog(null, jPanel1);
+                        String choice = jComboBox1.getSelectedItem().toString();
+                        if (choice.equalsIgnoreCase("Admin Dashboard")) {
                             java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
+                        } else if (choice.equalsIgnoreCase("View Pos Machine")) {
+                            java.awt.EventQueue.invokeLater(() -> new Machine().setVisible(true));
+
+                        }
+                    } else if (role.equalsIgnoreCase("Employee")) {
+                        JOptionPane.showMessageDialog(null, "Log in succesfull");
+
+                        java.awt.EventQueue.invokeLater(() -> new Machine().setVisible(true));
                     }
-                    else if(role.equalsIgnoreCase("Employee")) {
-                           java.awt.EventQueue.invokeLater(() -> new Machine().setVisible(true)); 
+                    else {
+                       JOptionPane.showMessageDialog(null, "Login Error");
+
                     }
+
                     
                     
-                   JOptionPane.showMessageDialog(this, "Log in succesfull");
                     
                         dispose();  
                 }catch(Exception eb) {
-                    
+                                JOptionPane.showMessageDialog(null, "Login Error");
+
                 }
                
             } else {
             }
         } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, "Login Error");
+            JOptionPane.showMessageDialog(null, "Login Error");
             System.getLogger(Menu.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Login Error");
+            JOptionPane.showMessageDialog(null, "Login Error");
 
             System.getLogger(Menu.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -416,14 +482,18 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboMachine;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JButton login;
     private javax.swing.JPanel parentPane;
     private javax.swing.JPasswordField password;

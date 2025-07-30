@@ -1,11 +1,13 @@
 
 import Database.Database;
+import java.awt.Desktop;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import org.apache.pdfbox.pdmodel.PDDocument; 
 import org.apache.pdfbox.pdmodel.PDPage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +21,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Stack;
 import javax.imageio.ImageIO;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -29,6 +33,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName;
@@ -90,6 +96,7 @@ public class Dashboard extends javax.swing.JFrame {
         RefreshTransactions = new javax.swing.JButton();
         TransactionTable = new javax.swing.JScrollPane();
         TransactionsTable = new javax.swing.JTable();
+        deleteTransaction = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         Reports = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
@@ -110,6 +117,8 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel48 = new javax.swing.JLabel();
         successFulSales = new javax.swing.JLabel();
         SaveSummary = new javax.swing.JButton();
+        setDateButton = new javax.swing.JButton();
+        OpenFiles = new javax.swing.JButton();
         Items = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -280,6 +289,28 @@ public class Dashboard extends javax.swing.JFrame {
         MachineId = new javax.swing.JTextField();
         jLabel74 = new javax.swing.JLabel();
         removeMachineButton = new javax.swing.JButton();
+        StaffPanel = new javax.swing.JPanel();
+        jPanel38 = new javax.swing.JPanel();
+        jLabel79 = new javax.swing.JLabel();
+        RefreshItem5 = new javax.swing.JButton();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        StaffTables1 = new javax.swing.JTable();
+        setDatePanel = new javax.swing.JPanel();
+        jPanel36 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        setDateComboBox = new javax.swing.JComboBox<>();
+        setDatePanel2 = new javax.swing.JPanel();
+        jPanel39 = new javax.swing.JPanel();
+        jLabel42 = new javax.swing.JLabel();
+        setDateComboBox1 = new javax.swing.JComboBox<>();
+        historyPanel = new javax.swing.JPanel();
+        jPanel37 = new javax.swing.JPanel();
+        jLabel75 = new javax.swing.JLabel();
+        RefreshHistory = new javax.swing.JButton();
+        TransactionTable1 = new javax.swing.JScrollPane();
+        historyTable = new javax.swing.JTable();
+        deleteTransaction1 = new javax.swing.JButton();
+        jPanel40 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -538,10 +569,10 @@ public class Dashboard extends javax.swing.JFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(AddSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(DeleteSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(AddSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(DeleteSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(RefreshSupplier)))
                 .addGap(413, 413, 413))
         );
@@ -634,26 +665,50 @@ public class Dashboard extends javax.swing.JFrame {
         TransactionsTable.getTableHeader().setResizingAllowed(false);
         TransactionsTable.getTableHeader().setReorderingAllowed(false);
         TransactionTable.setViewportView(TransactionsTable);
+        if (TransactionsTable.getColumnModel().getColumnCount() > 0) {
+            TransactionsTable.getColumnModel().getColumn(4).setHeaderValue("QUANTITY");
+            TransactionsTable.getColumnModel().getColumn(5).setHeaderValue("SALETIME");
+            TransactionsTable.getColumnModel().getColumn(6).setHeaderValue("TOTAL");
+            TransactionsTable.getColumnModel().getColumn(7).setResizable(false);
+            TransactionsTable.getColumnModel().getColumn(7).setHeaderValue("STATUS");
+        }
+
+        deleteTransaction.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        deleteTransaction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/delete.png"))); // NOI18N
+        deleteTransaction.setText("Delete");
+        deleteTransaction.setBorder(null);
+        deleteTransaction.setBorderPainted(false);
+        deleteTransaction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteTransactionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(TransactionTable))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(618, 618, 618)
-                        .addComponent(RefreshTransactions))
-                    .addComponent(TransactionTable, javax.swing.GroupLayout.PREFERRED_SIZE, 1071, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(404, Short.MAX_VALUE))
+                        .addGap(486, 486, 486)
+                        .addComponent(deleteTransaction)
+                        .addGap(18, 18, 18)
+                        .addComponent(RefreshTransactions)))
+                .addContainerGap(426, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(RefreshTransactions, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(RefreshTransactions, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(deleteTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(TransactionTable, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(90, Short.MAX_VALUE))
@@ -693,7 +748,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addGroup(TransactionsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 86, Short.MAX_VALUE))
         );
 
         Reports.setBackground(java.awt.Color.white);
@@ -719,7 +774,7 @@ public class Dashboard extends javax.swing.JFrame {
         });
 
         jPanel11.setBackground(java.awt.Color.white);
-        jPanel11.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel11.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jLabel5.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 48)); // NOI18N
         jLabel5.setText("Summary");
@@ -779,14 +834,12 @@ public class Dashboard extends javax.swing.JFrame {
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addGap(204, 204, 204)
-                                .addComponent(VoidCount, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-                                .addGap(23, 23, 23))
+                                .addComponent(VoidCount, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(208, 208, 208)
-                                .addComponent(SalesCount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(23, 23, 23)))
-                        .addGap(6, 6, 6)
+                                .addComponent(SalesCount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(29, 29, 29)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
                             .addComponent(SalesTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -838,7 +891,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addGroup(jPanel11Layout.createSequentialGroup()
                         .addGap(180, 180, 180)
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(212, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -861,35 +914,67 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
+        setDateButton.setBackground(java.awt.Color.lightGray);
+        setDateButton.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        setDateButton.setText("Set Date");
+        setDateButton.setBorder(null);
+        setDateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setDateButtonActionPerformed(evt);
+            }
+        });
+
+        OpenFiles.setBackground(java.awt.Color.lightGray);
+        OpenFiles.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        OpenFiles.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/folder.png"))); // NOI18N
+        OpenFiles.setText("Files");
+        OpenFiles.setBorder(null);
+        OpenFiles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenFilesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(jLabel4)
-                        .addGap(637, 637, 637)
-                        .addComponent(SaveSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(335, 335, 335)
+                        .addComponent(setDateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(OpenFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(SaveSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(RefreshSummary)))
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addGap(352, 352, 352))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(0, 11, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(0, 11, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(RefreshSummary)
+                                    .addComponent(SaveSummary)
+                                    .addComponent(OpenFiles)))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(RefreshSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(SaveSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(setDateButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(204, 204, 204))
         );
@@ -1254,11 +1339,11 @@ public class Dashboard extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addComponent(jLabel7)
-                        .addGap(533, 533, 533)
-                        .addComponent(AddItem2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(454, 454, 454)
+                        .addComponent(AddItem2, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(DeleteItem2)
-                        .addGap(18, 18, 18)
+                        .addComponent(DeleteItem2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22)
                         .addComponent(RefreshItem2))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                         .addContainerGap()
@@ -1557,9 +1642,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(addStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(DeleteItem3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(DeleteItem3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(RefreshItem3)
                 .addGap(32, 32, 32))
@@ -1886,9 +1971,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(AddItem4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DeleteItem4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(AddItem4, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(DeleteItem4, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(RefreshItem4)
                 .addGap(20, 20, 20))
@@ -2665,6 +2750,11 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel55.setText("Enter ID :");
 
         productID.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
+        productID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productIDActionPerformed(evt);
+            }
+        });
 
         jLabel56.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 24)); // NOI18N
         jLabel56.setText("Remove Product");
@@ -3001,11 +3091,365 @@ public class Dashboard extends javax.swing.JFrame {
                 .addContainerGap(130, Short.MAX_VALUE))
         );
 
+        StaffPanel.setBackground(java.awt.Color.white);
+        StaffPanel.setMaximumSize(new java.awt.Dimension(1920, 1080));
+        StaffPanel.setPreferredSize(new java.awt.Dimension(1280, 720));
+
+        jPanel38.setBackground(java.awt.Color.white);
+
+        jLabel79.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 36)); // NOI18N
+        jLabel79.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/staff.png"))); // NOI18N
+        jLabel79.setText("Staff ");
+
+        RefreshItem5.setBackground(java.awt.Color.lightGray);
+        RefreshItem5.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        RefreshItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/refresh.png"))); // NOI18N
+        RefreshItem5.setText("Refresh");
+        RefreshItem5.setBorder(null);
+        RefreshItem5.setBorderPainted(false);
+        RefreshItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RefreshItem5ActionPerformed(evt);
+            }
+        });
+
+        StaffTables1.setAutoCreateRowSorter(true);
+        StaffTables1.setBackground(new java.awt.Color(153, 153, 153));
+        StaffTables1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
+        StaffTables1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Username", "Status", "Role"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        StaffTables1.setEditingColumn(0);
+        StaffTables1.setEditingRow(0);
+        StaffTables1.getTableHeader().setResizingAllowed(false);
+        StaffTables1.getTableHeader().setReorderingAllowed(false);
+        StaffTables1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                StaffTables1MouseClicked(evt);
+            }
+        });
+        jScrollPane9.setViewportView(StaffTables1);
+        StaffTables1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        javax.swing.GroupLayout jPanel38Layout = new javax.swing.GroupLayout(jPanel38);
+        jPanel38.setLayout(jPanel38Layout);
+        jPanel38Layout.setHorizontalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel38Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(jLabel79)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(RefreshItem5)
+                .addGap(32, 32, 32))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel38Layout.createSequentialGroup()
+                .addContainerGap(23, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 980, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel38Layout.setVerticalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel38Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(RefreshItem5)
+                    .addComponent(jLabel79))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
+                .addGap(131, 131, 131))
+        );
+
+        javax.swing.GroupLayout StaffPanelLayout = new javax.swing.GroupLayout(StaffPanel);
+        StaffPanel.setLayout(StaffPanelLayout);
+        StaffPanelLayout.setHorizontalGroup(
+            StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(StaffPanelLayout.createSequentialGroup()
+                .addComponent(jPanel38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 271, Short.MAX_VALUE))
+        );
+        StaffPanelLayout.setVerticalGroup(
+            StaffPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(StaffPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(7, Short.MAX_VALUE))
+        );
+
+        setDatePanel.setMaximumSize(new java.awt.Dimension(522, 185));
+        setDatePanel.setPreferredSize(new java.awt.Dimension(522, 185));
+
+        jLabel13.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        jLabel13.setText("Select date for the summary");
+
+        setDateComboBox.setEditable(true);
+        setDateComboBox.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
+        setDateComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setDateComboBoxMouseClicked(evt);
+            }
+        });
+        setDateComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setDateComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel36Layout = new javax.swing.GroupLayout(jPanel36);
+        jPanel36.setLayout(jPanel36Layout);
+        jPanel36Layout.setHorizontalGroup(
+            jPanel36Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel36Layout.createSequentialGroup()
+                .addGroup(jPanel36Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel13)
+                    .addGroup(jPanel36Layout.createSequentialGroup()
+                        .addGap(147, 147, 147)
+                        .addComponent(setDateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(150, Short.MAX_VALUE))
+        );
+        jPanel36Layout.setVerticalGroup(
+            jPanel36Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel36Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel13)
+                .addGap(29, 29, 29)
+                .addComponent(setDateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(91, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout setDatePanelLayout = new javax.swing.GroupLayout(setDatePanel);
+        setDatePanel.setLayout(setDatePanelLayout);
+        setDatePanelLayout.setHorizontalGroup(
+            setDatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(setDatePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel36, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        setDatePanelLayout.setVerticalGroup(
+            setDatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(setDatePanelLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jPanel36, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        setDatePanel2.setMaximumSize(new java.awt.Dimension(522, 185));
+        setDatePanel2.setPreferredSize(new java.awt.Dimension(522, 185));
+
+        jLabel42.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        jLabel42.setText("Select date for deletion");
+
+        setDateComboBox1.setEditable(true);
+        setDateComboBox1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
+        setDateComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setDateComboBox1MouseClicked(evt);
+            }
+        });
+        setDateComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setDateComboBox1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel39Layout = new javax.swing.GroupLayout(jPanel39);
+        jPanel39.setLayout(jPanel39Layout);
+        jPanel39Layout.setHorizontalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel39Layout.createSequentialGroup()
+                .addGap(144, 144, 144)
+                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(setDateComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel39Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jLabel42)))
+                .addContainerGap(150, Short.MAX_VALUE))
+        );
+        jPanel39Layout.setVerticalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel39Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel42)
+                .addGap(29, 29, 29)
+                .addComponent(setDateComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(91, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout setDatePanel2Layout = new javax.swing.GroupLayout(setDatePanel2);
+        setDatePanel2.setLayout(setDatePanel2Layout);
+        setDatePanel2Layout.setHorizontalGroup(
+            setDatePanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(setDatePanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel39, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        setDatePanel2Layout.setVerticalGroup(
+            setDatePanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(setDatePanel2Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jPanel39, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        historyPanel.setBackground(java.awt.Color.white);
+        historyPanel.setMaximumSize(new java.awt.Dimension(1920, 1080));
+        historyPanel.setPreferredSize(new java.awt.Dimension(1280, 720));
+
+        jPanel37.setBackground(java.awt.Color.white);
+
+        jLabel75.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 36)); // NOI18N
+        jLabel75.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/history.png"))); // NOI18N
+        jLabel75.setText("History");
+
+        RefreshHistory.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        RefreshHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/refresh.png"))); // NOI18N
+        RefreshHistory.setText("Refresh");
+        RefreshHistory.setBorder(null);
+        RefreshHistory.setBorderPainted(false);
+        RefreshHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RefreshHistoryActionPerformed(evt);
+            }
+        });
+
+        historyTable.setBackground(new java.awt.Color(153, 153, 153));
+        historyTable.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
+        historyTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ID", "User", "Change-Made", "Date"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        historyTable.setEditingColumn(0);
+        historyTable.setEditingRow(0);
+        historyTable.getTableHeader().setResizingAllowed(false);
+        historyTable.getTableHeader().setReorderingAllowed(false);
+        TransactionTable1.setViewportView(historyTable);
+
+        deleteTransaction1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
+        deleteTransaction1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/clear.png"))); // NOI18N
+        deleteTransaction1.setText("Clear");
+        deleteTransaction1.setBorder(null);
+        deleteTransaction1.setBorderPainted(false);
+        deleteTransaction1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteTransaction1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel37Layout = new javax.swing.GroupLayout(jPanel37);
+        jPanel37.setLayout(jPanel37Layout);
+        jPanel37Layout.setHorizontalGroup(
+            jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel37Layout.createSequentialGroup()
+                .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel37Layout.createSequentialGroup()
+                        .addComponent(jLabel75, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(178, 178, 178)
+                        .addComponent(deleteTransaction1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(RefreshHistory))
+                    .addComponent(TransactionTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 1005, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 316, Short.MAX_VALUE))
+        );
+        jPanel37Layout.setVerticalGroup(
+            jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel37Layout.createSequentialGroup()
+                .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel75)
+                    .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(RefreshHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(deleteTransaction1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(TransactionTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 657, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel40.setBackground(java.awt.Color.darkGray);
+
+        javax.swing.GroupLayout jPanel40Layout = new javax.swing.GroupLayout(jPanel40);
+        jPanel40.setLayout(jPanel40Layout);
+        jPanel40Layout.setHorizontalGroup(
+            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 731, Short.MAX_VALUE)
+        );
+        jPanel40Layout.setVerticalGroup(
+            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 311, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout historyPanelLayout = new javax.swing.GroupLayout(historyPanel);
+        historyPanel.setLayout(historyPanelLayout);
+        historyPanelLayout.setHorizontalGroup(
+            historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(historyPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(82, 82, 82)
+                .addComponent(jPanel40, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        historyPanelLayout.setVerticalGroup(
+            historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(historyPanelLayout.createSequentialGroup()
+                .addGroup(historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(historyPanelLayout.createSequentialGroup()
+                        .addGap(144, 144, 144)
+                        .addComponent(jPanel40, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(historyPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MPOS");
         setBackground(java.awt.Color.white);
         setName("MPOS"); // NOI18N
         setSize(new java.awt.Dimension(1280, 720));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jPanel1.setBackground(java.awt.Color.white);
         jPanel1.setMaximumSize(new java.awt.Dimension(1920, 1080));
@@ -3024,12 +3468,17 @@ public class Dashboard extends javax.swing.JFrame {
         TaskBar.setBorder(null);
         TaskBar.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
         TaskBar.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Transactions", "Reports", "Items", "Suppliers", "Staff & Admins", "Pos Machines" };
+            String[] strings = { "Transactions", "Reports", "Items", "Suppliers", "Staff & Admins", "Pos Machines", "History" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
         TaskBar.setFocusable(false);
         TaskBar.setSelectionBackground(new java.awt.Color(204, 204, 204));
+        TaskBar.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                TaskBarFocusGained(evt);
+            }
+        });
         TaskBar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TaskBarMouseClicked(evt);
@@ -3223,7 +3672,7 @@ public class Dashboard extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Retrieving data");
+            JOptionPane.showMessageDialog(null, "Error Retrieving data");
         }
       
     }//GEN-LAST:event_RefreshTransactionsActionPerformed
@@ -3235,7 +3684,35 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void TaskBarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaskBarMouseClicked
         // TODO add your handling code here:
-        
+
+        CurrentUser currentUser = null;
+
+        try {
+            String filename = "log.txt";
+            FileInputStream file = new FileInputStream(filename);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUser = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+        } catch (Exception e) {
+
+        }
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+          
         int selectedIndex = TaskBar.getSelectedIndex();
         parentPane.removeAll();
            parentPane.repaint();
@@ -3247,7 +3724,13 @@ public class Dashboard extends javax.swing.JFrame {
             parentPane.revalidate();
         }
         else if(selectedIndex == 1){
-              parentPane.removeAll();
+            if(currentUser.getCurrentRole().equalsIgnoreCase("Staff")) {
+                
+                SaveSummary.setEnabled(false);
+                SaveSummary.setVisible(false);
+                
+            }
+            parentPane.removeAll();
             parentPane.add(Reports);
             parentPane.repaint();
             parentPane.revalidate();
@@ -3264,15 +3747,33 @@ public class Dashboard extends javax.swing.JFrame {
             parentPane.repaint();
             parentPane.revalidate();
         }
-          else if(selectedIndex == 4){
-            parentPane.removeAll();
-            parentPane.add(StaffAAdmin);
-            parentPane.repaint();
-            parentPane.revalidate();
+        else if (selectedIndex == 4) {
+            if (currentUser.getCurrentRole().equalsIgnoreCase("Staff")) {
+
+                SaveSummary.setEnabled(false);
+                SaveSummary.setVisible(false);
+                parentPane.removeAll();
+
+                parentPane.add(StaffPanel);
+                parentPane.repaint();
+                parentPane.revalidate();
+            } else {
+                parentPane.removeAll();
+                parentPane.add(StaffAAdmin);
+                parentPane.repaint();
+                parentPane.revalidate();
+            }
+
         }
           else if(selectedIndex == 5){
               parentPane.removeAll();
             parentPane.add(Machine);
+            parentPane.repaint();
+            parentPane.revalidate();
+        }
+           else if(selectedIndex == 6){
+              parentPane.removeAll();
+            parentPane.add(historyPanel);
             parentPane.repaint();
             parentPane.revalidate();
         }
@@ -3283,8 +3784,9 @@ public class Dashboard extends javax.swing.JFrame {
     private void SaveSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveSummaryActionPerformed
         // TODO add your handling code here:
         LocalDateTime currentDate = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");    
-        String filename = "C:/Mpos/Mpos"+format.format(currentDate)+".pdf";
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");  
+        
+        String filename = "C:/Mpos/Mpos"+selectedDate+"_Folder";
         
       
         try {
@@ -3297,8 +3799,21 @@ public class Dashboard extends javax.swing.JFrame {
             currentUser = (CurrentUser) in.readObject();
             file.close();
             in.close();
-
        
+            AccessPermission ap = new AccessPermission();
+
+            //Creating StandardProtectionPolicy object
+            String key = currentUser.getCurrentUserName()+currentUser.getCurrentMachine();
+            StandardProtectionPolicy spp = new StandardProtectionPolicy(key, key, ap);
+
+            //Setting the length of the encryption key
+            spp.setEncryptionKeyLength(128);
+
+            //Setting the access permissions
+            spp.setPermissions(ap);
+
+            //Protecting the document
+           
                 PDDocument document = new PDDocument();
                 new File(filename).mkdir();
                 PDDocumentInformation pdd = document.getDocumentInformation();
@@ -3430,7 +3945,10 @@ public class Dashboard extends javax.swing.JFrame {
             cs.newLineAtOffset(50, 350);
             cs.newLine();
             cs.endText();
-
+            
+          
+                document.protect(spp);
+            
 
                
             
@@ -3457,47 +3975,126 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void RefreshSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshSummaryActionPerformed
         // TODO add your handling code here:
-             try {
+        
+        if(selectedDate.isBlank() ||selectedDate.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please Set Date First!");
+        }
+        else if(selectedDate.equalsIgnoreCase("All")) {
+            try {
+
+                Database b = new Database();
+                Connection con = b.getCon();
+
+                String sqlGetSuccessfull = "select count(*) from transactions where status ='Completed';;";
+                String sqlGetSuccessfullSales = "select sum(total) from transactions where status ='Completed';";
+
+                String sqlGetCount = "select count(*) from transactions;;";
+                String sqlGetCountSales = "select sum(total) from transactions;";
+
+                String sqlGetVoidCount = "select count(*) from transactions where status = 'Voided';";
+                String sqlGetVoidSales = "select sum(total) from transactions where status = 'Voided';";
+
+                Statement stmt1 = con.createStatement();
+                Statement stmt2 = con.createStatement();
+                Statement stmt3 = con.createStatement();
+                Statement stmt4 = con.createStatement();
+                Statement stmt5 = con.createStatement();
+                Statement stmt6 = con.createStatement();
+
+                ResultSet rs = stmt1.executeQuery(sqlGetSuccessfull);
+                ResultSet rs2 = stmt2.executeQuery(sqlGetSuccessfullSales);
+
+                ResultSet rs3 = stmt3.executeQuery(sqlGetCount);
+                ResultSet rs4 = stmt4.executeQuery(sqlGetCountSales);
+
+                ResultSet rs5 = stmt5.executeQuery(sqlGetVoidCount);
+                ResultSet rs6 = stmt6.executeQuery(sqlGetVoidSales);
+
+                DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
+
+                while (rs.next()) {
+                    successFullCount.setText("" + rs.getInt(1));
+                }
+                while (rs2.next()) {
+                    successFulSales.setText(formatter.format(rs2.getDouble(1)) + " Pesos");
+                }
+
+                while (rs3.next()) {
+                    SalesCount.setText("" + rs3.getInt(1));
+                }
+                while (rs4.next()) {
+                    SalesTotal.setText(formatter.format(rs4.getDouble(1)) + " Pesos");
+                }
+
+                while (rs5.next()) {
+                    VoidCount.setText("" + rs5.getInt(1));
+                }
+                while (rs6.next()) {
+                    VoidTotal.setText(formatter.format(rs6.getDouble(1)) + " Pesos");
+                }
+                System.out.println("Im Working here");
+                rs.close();
+                rs2.close();
+                rs3.close();
+                rs4.close();
+                rs5.close();
+                rs6.close();
+
+                repaint();
+                revalidate();
+            } catch (Exception e) {
+
+            }
+        }
+        else {
+           try {
 
 
             
             Database b = new Database();
             Connection con = b.getCon();
          
-            String sqlGetSuccessfull = "select count(*) from transactions where status ='Completed';";
-            String sqlGetSuccessfullSales = "select sum(total) from transactions where status ='Completed';";
+            String sqlGetSuccessfull = "select count(*) from transactions where status ='Completed' and saletime like ?;";
+            String sqlGetSuccessfullSales = "select sum(total) from transactions where status ='Completed' and saletime like ?;";
             
             
             
-            String sqlGetCount = "select count(*) from transactions;";
-            String sqlGetCountSales = "select sum(total) from transactions;";
+            String sqlGetCount = "select count(*) from transactions where saletime like ?;";
+            String sqlGetCountSales = "select sum(total) from transactions where saletime like ?;";
             
             
-            String sqlGetVoidCount = "select count(*) from transactions where status = 'Voided';";
-            String sqlGetVoidSales = "select sum(total) from transactions where status = 'Voided';";
+            String sqlGetVoidCount = "select count(*) from transactions where status = 'Voided' and saletime like ?;";
+            String sqlGetVoidSales = "select sum(total) from transactions where status = 'Voided' and saletime like ?;";
             
             
+            PreparedStatement prep = con.prepareStatement(sqlGetSuccessfull);
+            PreparedStatement prep2 = con.prepareStatement(sqlGetSuccessfullSales);
+            PreparedStatement prep3 = con.prepareStatement(sqlGetCount);
+            PreparedStatement prep4 = con.prepareStatement(sqlGetCountSales);
+            PreparedStatement prep5 = con.prepareStatement(sqlGetVoidCount);
+            PreparedStatement prep6 = con.prepareStatement(sqlGetVoidSales);
             
-            Statement stmt1 = con.createStatement();
-            Statement stmt2 = con.createStatement();
-            Statement stmt3 = con.createStatement();
-            Statement stmt4 = con.createStatement();
-            Statement stmt5 = con.createStatement();
-            Statement stmt6 = con.createStatement();
-            
-            
+            prep.setString(1, "%" + selectedDate + "%");
+            prep2.setString(1, "%" + selectedDate + "%");
+            prep3.setString(1, "%" + selectedDate + "%");
+            prep4.setString(1, "%" + selectedDate + "%");
+            prep5.setString(1, "%" + selectedDate + "%");
+            prep6.setString(1, "%" + selectedDate + "%");
+
+              
+
            
       
            
             
-            ResultSet rs = stmt1.executeQuery(sqlGetSuccessfull);
-            ResultSet rs2 = stmt2.executeQuery(sqlGetSuccessfullSales);
+            ResultSet rs = prep.executeQuery();
+            ResultSet rs2 =prep2.executeQuery();
             
-            ResultSet rs3 = stmt3.executeQuery(sqlGetCount);
-            ResultSet rs4 = stmt4.executeQuery(sqlGetCountSales);
+            ResultSet rs3 = prep3.executeQuery();
+            ResultSet rs4 = prep4.executeQuery();
             
-            ResultSet rs5 = stmt5.executeQuery(sqlGetVoidCount);
-            ResultSet rs6 = stmt6.executeQuery(sqlGetVoidSales);
+            ResultSet rs5 = prep5.executeQuery();
+            ResultSet rs6 = prep6.executeQuery();
             
             DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
 
@@ -3510,7 +4107,7 @@ public class Dashboard extends javax.swing.JFrame {
             
             while(rs5.next()){ VoidCount.setText(""+ rs5.getInt(1)); }
             while(rs6.next()){ VoidTotal.setText(formatter.format(rs6.getDouble(1))+" Pesos");  }
-              System.out.println("Im Working here");
+            System.out.println("Im Working here");
             rs.close();
             rs2.close();
             rs3.close();
@@ -3524,7 +4121,9 @@ public class Dashboard extends javax.swing.JFrame {
             revalidate();
         } catch (Exception e) {
               System.out.println("Error: "+e);
+        }  
         }
+            
         
         
             repaint();
@@ -3575,7 +4174,7 @@ public class Dashboard extends javax.swing.JFrame {
             
             
         }catch(Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Retrieving Data");
+            JOptionPane.showMessageDialog(null, "Error Retrieving Data");
         }
         
         
@@ -3583,21 +4182,21 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void DeleteSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteSupplierActionPerformed
 
-        JOptionPane.showMessageDialog(parentPane, removeSupplier);
+        JOptionPane.showMessageDialog(null, removeSupplier);
         // TODO add your handling code here:
     }//GEN-LAST:event_DeleteSupplierActionPerformed
 
     private void AddSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddSupplierActionPerformed
         // TODO add your handling code here:
         
-        JOptionPane.showMessageDialog(parentPane, AddSupplierPanel);
+        JOptionPane.showMessageDialog(null, AddSupplierPanel);
         
     }//GEN-LAST:event_AddSupplierActionPerformed
 
    
     private void AddItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItem2ActionPerformed
 
-        JOptionPane.showMessageDialog(parentPane, AddItemsPanel);
+        JOptionPane.showMessageDialog(null, AddItemsPanel);
         // TODO add your handling code here:
     }//GEN-LAST:event_AddItem2ActionPerformed
 
@@ -3623,16 +4222,30 @@ public class Dashboard extends javax.swing.JFrame {
             prep.setString(5, userIdUpdateText);
             int rows = prep.executeUpdate();
             if (rows >= 1) {
-                JOptionPane.showMessageDialog(parentPane, "Updated Successfully");
+                 String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Updated User");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Updated Successfully");
             } else {
-                JOptionPane.showMessageDialog(parentPane, "No Rows Updated");
+                JOptionPane.showMessageDialog(null, "No Rows Updated");
 
             }
 
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Updating Row");
+            JOptionPane.showMessageDialog(null, "Error Updating Row");
         }
 
         
@@ -3642,13 +4255,13 @@ public class Dashboard extends javax.swing.JFrame {
     private void addStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStaffActionPerformed
         // TODO add your handling code here:
        
-           JOptionPane.showMessageDialog(parentPane, AddStaffPanel); 
+           JOptionPane.showMessageDialog(null, AddStaffPanel); 
         
     }//GEN-LAST:event_addStaffActionPerformed
 
     private void AddItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItem4ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(parentPane, AddMachinePanel);
+        JOptionPane.showMessageDialog(null, AddMachinePanel);
     }//GEN-LAST:event_AddItem4ActionPerformed
 
     private void AddStaffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddStaffButtonActionPerformed
@@ -3681,23 +4294,38 @@ public class Dashboard extends javax.swing.JFrame {
             
             prep.executeUpdate();
             hash.executeUpdate();
-            JOptionPane.showMessageDialog(parentPane, "Added Successfully");
-  
+            
+            
+            String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "Insert into history (user_name,change_made,date) values(?,?,?);";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Added-User");
+            updateHistory.setString(3,format.format(currentDate));
+            
+            updateHistory.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "Added Successfully");
+            updateHistory.close();
+            prep.close();
+            hash.close();
+            userName.setText("");
+            userPassword.setText("");
+            updateHistory.close();
             
 
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(parentPane, "Erorr Adding");
-
-            System.getLogger(Dashboard.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(parentPane, "Erorr Adding");
-
-            System.getLogger(Dashboard.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            JOptionPane.showMessageDialog(parentPane, "Erorr Adding");
-
-            System.getLogger(Dashboard.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erorr Adding"+ex);
         }
+        
     }//GEN-LAST:event_AddStaffButtonActionPerformed
 
     private void RefreshItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshItem3ActionPerformed
@@ -3732,18 +4360,25 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void DeleteItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItem3ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(parentPane, removeStaff);
+        JOptionPane.showMessageDialog(null, removeStaff);
     }//GEN-LAST:event_DeleteItem3ActionPerformed
 
     private void removeStaffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeStaffButtonActionPerformed
         // TODO add your handling code here:
         try {
+              String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
             Employee e = new Employee();
             int currentId = e.getCurrentId();
             String id = idToRemove.getText();
             
             if (Integer.parseInt(id) == currentId) {
-                JOptionPane.showMessageDialog(parentPane, "Unable To Delete Current Session User");
+                JOptionPane.showMessageDialog(null, "Unable To Delete Current Session User");
             } else {
                 Database b = new Database();
                 Connection con = b.getCon();
@@ -3753,13 +4388,24 @@ public class Dashboard extends javax.swing.JFrame {
                 PreparedStatement prep = con.prepareStatement(sqlRemove);
                 prep.setString(1, id);
                 prep.executeUpdate();
-                JOptionPane.showMessageDialog(parentPane, "Succesfully deleted");
+                
+               
+            prep.close();
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Removed User");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+            updateHistory.close();
+                idToRemove.setText("");
+                JOptionPane.showMessageDialog(null, "Succesfully deleted");
                 revalidate();
                 repaint();
            
         }
          } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Erorr Deleting");
+            JOptionPane.showMessageDialog(null, "Erorr Deleting");
 
         }
 
@@ -3883,16 +4529,30 @@ public class Dashboard extends javax.swing.JFrame {
 
             int rows = prep.executeUpdate();
               if(rows >= 1) {
-             JOptionPane.showMessageDialog(parentPane, "No Rows Updated");
+             JOptionPane.showMessageDialog(null, "No Rows Updated");
  
             }
-            else {
-                JOptionPane.showMessageDialog(parentPane, "Updated Successfully");
+              else {
+                  String filenamess = "log.txt";
+                  CurrentUser currentUserrr = null;
+                  FileInputStream file = new FileInputStream(filenamess);
+                  ObjectInputStream in = new ObjectInputStream(file);
+                  currentUserrr = (CurrentUser) in.readObject();
+                  file.close();
+                  in.close();
+
+                  String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+                  PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+                  updateHistory.setString(1, currentUserrr.getCurrentUserName());
+                  updateHistory.setString(2, "Updated Supplier");
+                  updateHistory.setString(3, format.format(currentDate));
+                  updateHistory.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Updated Successfully");
             }
             repaint();
             revalidate();
         }catch(Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Updating Row: " + e);
+            JOptionPane.showMessageDialog(null, "Error Updating Row: " + e);
         }
         
         
@@ -3972,16 +4632,34 @@ public class Dashboard extends javax.swing.JFrame {
             
           
             prep.executeUpdate();
-            JOptionPane.showMessageDialog(parentPane, "Added Successfully");
+            prep.close();
+            String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Added Supplier");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+            SupplierId.setText("");
+            SupplierName.setText("");
+            SupplierEmail.setText("");
+            SupplierItemCount.setValue(0);
+            updateHistory.close();
+            JOptionPane.showMessageDialog(null, "Added Successfully");
   
             
 
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(parentPane, "Erorr Adding");
-
-            System.getLogger(Dashboard.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(parentPane, "Erorr Adding");        }   
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erorr Adding");
+        }
+      
     }//GEN-LAST:event_AddStaffButton1ActionPerformed
 
     private void SupplierNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupplierNameActionPerformed
@@ -4005,10 +4683,24 @@ public class Dashboard extends javax.swing.JFrame {
             PreparedStatement prep = con.prepareStatement(sqlRemoveSupplier);
             prep.setString(1, idToRemove);
             prep.executeUpdate();
-            JOptionPane.showMessageDialog(parentPane, "Succefully deleted");
+             String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Removed Supplier");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Succefully deleted");
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Deleting Supplier");
+            JOptionPane.showMessageDialog(null, "Error Deleting Supplier");
         }
    
         // TODO add your handling code here:
@@ -4027,7 +4719,7 @@ public class Dashboard extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "ERROR: "+e);
+            JOptionPane.showMessageDialog(null, "ERROR: "+e);
         }
 
         
@@ -4060,7 +4752,7 @@ public class Dashboard extends javax.swing.JFrame {
         String productSupplier = ProductSupplierComboBoxUpdate.getSelectedItem().toString();
         String productDscription = ProductDescUpdate.getText();
         if(productID == null || productName == null ||productCategory == null||productPrice == null ||productSupplier == null ||productDscription == null) {
-             JOptionPane.showMessageDialog(parentPane, "ERROR: Please Fill The Selected Values");
+             JOptionPane.showMessageDialog(null, "ERROR: Please Fill The Selected Values");
         }
         String sqlUpdate = "Update items set name = ?, category = ?, quantity = ?, price = ?, supplier = ?, description = ? where id = ?;";
       
@@ -4079,18 +4771,32 @@ public class Dashboard extends javax.swing.JFrame {
 
             int rows = prep.executeUpdate();
             if(rows == 0) {
-             JOptionPane.showMessageDialog(parentPane, "No Rows Updated");
+             JOptionPane.showMessageDialog(null, "No Rows Updated");
  
             }
             else {
-                JOptionPane.showMessageDialog(parentPane, "Updated Successfully");
+                 String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Updated Item");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Updated Successfully");
             }
             
             repaint();
             revalidate();
         }catch(Exception e) {
             
-            JOptionPane.showMessageDialog(parentPane, "Error Updating Row: Please Fill Out All Values!");
+            JOptionPane.showMessageDialog(null, "Error Updating Row: Please Fill Out All Values!");
         }
         
         
@@ -4179,10 +4885,34 @@ public class Dashboard extends javax.swing.JFrame {
             prep.setString(6, productSupplier);
             prep.setString(7, productDescription);
             prep.executeUpdate();
-            JOptionPane.showMessageDialog(parentPane, "Added Successfully");
+            prep.close();
+            JOptionPane.showMessageDialog(null, "Added Successfully");
             
+            String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Added Item");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+            updateHistory.close();
+            ProductId.setText("");
+            ProductName.setText("");
+            ProductQuantity.setText("");
+            ProductPrice.setText("");
+            ProductCategory.setText("");
+            ProductId.setText("");
+            ProductSupplierComboBox.setSelectedItem("");
+            ProductDescription.setText("");
         }catch(Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Adding Product"+e);
+            JOptionPane.showMessageDialog(null, "Error Adding Product");
         }
 
 
@@ -4269,7 +4999,7 @@ public class Dashboard extends javax.swing.JFrame {
             
             
         }catch(Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Retrieving Data");
+            JOptionPane.showMessageDialog(null, "Error Retrieving Data");
         }
         
         // TODO add your handling code here:
@@ -4288,10 +5018,27 @@ public class Dashboard extends javax.swing.JFrame {
             PreparedStatement prep = con.prepareStatement(sqlRemoveSupplier);
             prep.setString(1, idToRemove);
             prep.executeUpdate();
-            JOptionPane.showMessageDialog(parentPane, "Succefully deleted");
+            prep.close();
+             String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?);";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Removed Item");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+            updateHistory.close();
+            productID.setText("");
+            JOptionPane.showMessageDialog(null, "Succefully deleted");
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Deleting Supplier");
+            JOptionPane.showMessageDialog(null, "Error Deleting Item: "+e);
         }
            // TODO add your handling code here:
     }//GEN-LAST:event_removeStaffButton2ActionPerformed
@@ -4302,7 +5049,7 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void DeleteItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItem2ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(parentPane, removeProduct);
+        JOptionPane.showMessageDialog(null, removeProduct);
     }//GEN-LAST:event_DeleteItem2ActionPerformed
 
     private void ProductQuantityUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProductQuantityUpdateActionPerformed
@@ -4404,17 +5151,31 @@ public class Dashboard extends javax.swing.JFrame {
 
             int rows = prep.executeUpdate();
               if(rows >= 1) {
-             JOptionPane.showMessageDialog(parentPane, "No Rows Updated");
+             JOptionPane.showMessageDialog(null, "No Rows Updated");
  
             }
             else {
-                JOptionPane.showMessageDialog(parentPane, "Updated Successfully");
+                   String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Updated Machine");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Updated Successfully");
             }
-            JOptionPane.showMessageDialog(parentPane, "Updated Successfully");
+            JOptionPane.showMessageDialog(null, "Updated Successfully");
             repaint();
             revalidate();
         }catch(Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Updating Row"+e);
+            JOptionPane.showMessageDialog(null, "Error Updating Row"+e);
         }
         
     }//GEN-LAST:event_UpdateSupplier1ActionPerformed
@@ -4494,10 +5255,29 @@ public class Dashboard extends javax.swing.JFrame {
             prep.setString(5, machineStatusInput);
           
             prep.executeUpdate();
-            JOptionPane.showMessageDialog(parentPane, "Added Successfully");
+            prep.close();
+            String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Added Machine");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+            updateHistory.close();
+            machineID.setText("");
+            machineName.setText("");
+            machineLocation.setText("");
+            JOptionPane.showMessageDialog(null, "Added Successfully");
             
         }catch(Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Adding Product");
+            JOptionPane.showMessageDialog(null, "Error Adding Product");
         }
 
         
@@ -4542,7 +5322,7 @@ public class Dashboard extends javax.swing.JFrame {
             
             
         }catch(Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Retrieving Data");
+            JOptionPane.showMessageDialog(null, "Error Retrieving Data");
         }
         
         
@@ -4561,10 +5341,28 @@ public class Dashboard extends javax.swing.JFrame {
             PreparedStatement prep = con.prepareStatement(sqlRemoveSupplier);
             prep.setString(1, idToRemove);
             prep.executeUpdate();
-            JOptionPane.showMessageDialog(parentPane, "Succefully deleted");
+            prep.close();
+             String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+            in.close();
+            
+            String sqlUpdateHistory = "insert into history (user_name,change_made,date) values(?,?,?)";
+            PreparedStatement updateHistory = con.prepareStatement(sqlUpdateHistory);
+            updateHistory.setString(1,currentUserrr.getCurrentUserName());
+            updateHistory.setString(2,"Removed Machine");
+            updateHistory.setString(3,format.format(currentDate));
+            updateHistory.executeUpdate();
+            
+            MachineId.setText("");
+            updateHistory.close();
+            JOptionPane.showMessageDialog(null, "Succefully deleted");
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "Error Deleting Supplier");
+            JOptionPane.showMessageDialog(null, "Error Deleting Supplier");
         }
         
     }//GEN-LAST:event_removeMachineButtonActionPerformed
@@ -4575,7 +5373,7 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void DeleteItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItem4ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(parentPane, removeMachine);
+        JOptionPane.showMessageDialog(null, removeMachine);
     }//GEN-LAST:event_DeleteItem4ActionPerformed
 
     private void typeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeTextFieldActionPerformed
@@ -4597,7 +5395,7 @@ public class Dashboard extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(parentPane, "ERROR: Please Fill The Selected Values");
+            JOptionPane.showMessageDialog(null, "ERROR: Please Fill The Selected Values");
         }
     }//GEN-LAST:event_MachineTableMouseClicked
 
@@ -4605,30 +5403,310 @@ public class Dashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_statusTextFieldActionPerformed
 
+    static String selectedDate = "";
+    static String selectedDateForDeletion = "";
+    static Stack<String> dateList = new Stack<>();
+
+    private void setDateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setDateButtonActionPerformed
+        // TODO add your handling code here:
+        setDateComboBox.setEditable(false);
+            try {
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+            if(!dateList.contains("All")) {
+              dateList.push("All");
+
+            }
+            Database b = new Database();
+            Connection con = b.getCon();
+            Statement stmt = con.createStatement();
+            String getDates = "Select saletime from transactions;";
+            ResultSet rss = stmt.executeQuery(getDates);
+            
+            while (rss.next()) {
+                
+                 String date = rss.getString("saletime");
+                 
+                  
+                    String getSubString = date.substring(0, 10);
+                    if(!dateList.contains(getSubString)) {
+                          dateList.push(getSubString);  
+                    }
+                  
+                    
+                
+           
+                }
+            
+                System.out.println("Stack: "+dateList);
+                for (String dateString : dateList) {
+                    model.addElement(dateString);
+            }
+
+            setDateComboBox.setModel(model);
+            repaint();
+            revalidate();
+        } catch (Exception e) {
+            System.out.println("Error");
+        }
+        
+        try {
+        JOptionPane.showMessageDialog(null, setDatePanel);
+        String date = setDateComboBox.getSelectedItem().toString();
+        selectedDate = date;
+   
+        }catch(Exception e) {
+            
+        }
+      
+        
+    }//GEN-LAST:event_setDateButtonActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+   
+        
+        
+    }//GEN-LAST:event_formWindowActivated
+
+    private void TaskBarFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TaskBarFocusGained
+        // TODO add your handling code here:
+         
+    }//GEN-LAST:event_TaskBarFocusGained
+
+    private void RefreshItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshItem5ActionPerformed
+        // TODO add your handling code here:
+          Database b = new Database();
+         
+         try {
+            Connection con = b.getCon();
+            Statement stmt = con.createStatement(); String getStaffAndAdminList = "Select * from staffandadmin where role != 'admin';";
+           
+             ResultSet rs = stmt.executeQuery(getStaffAndAdminList);
+             String[] columnNames = {"ID", "Username", "Status","Role"};
+             DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+             Employee emp = new Employee();
+            while (rs.next()) {
+                String Id = rs.getString("id");
+                String username = rs.getString("username");
+                String status = rs.getString("status");
+                String role = rs.getString("role");
+               
+                // create a single array of one row's worth of data
+                String[] data = {Id, username, status,role};
+                tableModel.addRow(data);
+            }
+            StaffTables1.setModel(tableModel);
+            repaint();
+            revalidate();
+        } catch (Exception e) {
+
+        }
+        
+    }//GEN-LAST:event_RefreshItem5ActionPerformed
+
+    private void StaffTables1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StaffTables1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_StaffTables1MouseClicked
+
+    private void OpenFilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFilesActionPerformed
+        // TODO add your handling code here:
+        try {
+            Desktop.getDesktop().open(new File("C:\\Mpos"));
+
+        } catch (Exception e) {
+            
+        }
+
+    }//GEN-LAST:event_OpenFilesActionPerformed
+
+    private void setDateComboBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_setDateComboBoxMouseClicked
+        // TODO add your handling code here:
+          
+    
+        
+
+    }//GEN-LAST:event_setDateComboBoxMouseClicked
+
+    private void setDateComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setDateComboBoxActionPerformed
+        // TODO add your handling code here:
+        
+     
+        
+        
+        
+        
+    }//GEN-LAST:event_setDateComboBoxActionPerformed
+
+    static Stack<String> dateListDeletion = new Stack<>();
+    private void deleteTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteTransactionActionPerformed
+        // TODO add your handling code here:
+        
+        
+                 setDateComboBox1.setEditable(false);
+            try {
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+            if(!dateListDeletion.contains("All")) {
+              dateListDeletion.push("All");
+
+            }
+            Database b = new Database();
+            Connection con = b.getCon();
+            Statement stmt = con.createStatement();
+            String getDates = "Select saletime from transactions;";
+            ResultSet rss = stmt.executeQuery(getDates);
+            
+            while (rss.next()) {
+                
+                 String date = rss.getString("saletime");
+                 
+                  
+                    String getSubString = date.substring(0, 10);
+                    if(!dateListDeletion.contains(getSubString)) {
+                          dateListDeletion.push(getSubString);  
+                    }
+                  
+                    
+                
+           
+                }
+            
+                for (String dateString : dateListDeletion) {
+                    model.addElement(dateString);
+            }
+
+            setDateComboBox1.setModel(model);
+            JOptionPane.showMessageDialog(null, setDatePanel2);
+            String dateToRemove = setDateComboBox1.getSelectedItem().toString();
+            selectedDateForDeletion = dateToRemove;
+                if (selectedDateForDeletion.isBlank()) {
+                    JOptionPane.showMessageDialog(null, "Please Enter Date!");
+
+                } else {
+                    String subString = selectedDateForDeletion.substring(0, 10);
+
+                    String sqlDelete = "Delete from transactions where saletime like ?";
+                    String sqlDeleteAll = "Delete from transactions";
+                    if (dateToRemove.equalsIgnoreCase("All")) {
+
+                        int rows = stmt.executeUpdate(sqlDeleteAll);
+                        if (rows > 0) {
+                            JOptionPane.showMessageDialog(null, "Deleted Successfully");
+                        }
+                    } else {
+                        PreparedStatement prep = con.prepareStatement(sqlDelete);
+                        prep.setString(1, "%" + selectedDateForDeletion + "%");
+                        int rows = prep.executeUpdate();
+                        if (rows > 0) {
+                            JOptionPane.showMessageDialog(null, "Deleted Successfully");
+                        }
+                    }
+                   
+                
+   
+            }
+            
+            
+            repaint();
+            revalidate();
+        } catch (Exception e) {
+            System.out.println("Error"+e);
+        }
+        
+        
+        
+        
+    }//GEN-LAST:event_deleteTransactionActionPerformed
+
+    private void setDateComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_setDateComboBox1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_setDateComboBox1MouseClicked
+
+    private void setDateComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setDateComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_setDateComboBox1ActionPerformed
+
+    private void RefreshHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshHistoryActionPerformed
+        // TODO add your handling code here:
+                try {
+            Database b = new Database();
+            Connection con = b.getCon();
+            Statement stmt = con.createStatement();
+            
+            String sqlTransactions = "Select * from history";
+                
+             ResultSet rs = stmt.executeQuery(sqlTransactions);
+             String[] columnNames = {"ID", "User","Change-Made","Date"};
+             
+             DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+             Employee emp = new Employee();
+            while (rs.next()) {
+                String Id = rs.getString("id");
+                String user = rs.getString("user_name");
+                String change = rs.getString("change_made");
+                String datee = rs.getString("date");
+              
+               
+                // create a single array of one row's worth of data
+                String[] data = {Id, user, change,datee};
+                tableModel.addRow(data);
+            }
+            historyTable.setModel(tableModel);
+            repaint();
+            revalidate();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error Retrieving data");
+        }
+        
+    }//GEN-LAST:event_RefreshHistoryActionPerformed
+
+    private void deleteTransaction1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteTransaction1ActionPerformed
+        // TODO add your handling code here:
+        int choice = JOptionPane.showConfirmDialog(
+                    null,
+                    "Clear Change History?",
+                    "MPOS",
+                    JOptionPane.YES_NO_OPTION);
+        if (choice == 0) {
+            try {
+                Database b = new Database();
+                Connection con = b.getCon();
+                Statement stmt = con.createStatement();
+                String sqlDeleteAll = "Delete from history";
+
+              
+                int rows = stmt.executeUpdate(sqlDeleteAll);
+                if (rows > 0) {
+                    JOptionPane.showMessageDialog(null, "Deleted Successfully");
+                }
+            } catch (Exception e) {
+
+            }
+
+            
+        }
+        
+    }//GEN-LAST:event_deleteTransaction1ActionPerformed
+
+    private void productIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_productIDActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    static LocalDateTime currentDate = LocalDateTime.now();
+    static DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        
+    
+         
+                java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
+
+            
+       
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
+       
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -4653,6 +5731,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTextField MachineSearch;
     private javax.swing.JButton MachineSearchButton;
     private javax.swing.JTable MachineTable;
+    private javax.swing.JButton OpenFiles;
     private javax.swing.JTextField ProductCategory;
     private javax.swing.JTextField ProductCategoryUpdate;
     private javax.swing.JTextField ProductDescUpdate;
@@ -4671,9 +5750,11 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> ProductSupplierComboBoxUpdate;
     private javax.swing.JTextField ProductSupplierText;
     private javax.swing.JTable ProductTable;
+    private javax.swing.JButton RefreshHistory;
     private javax.swing.JButton RefreshItem2;
     private javax.swing.JButton RefreshItem3;
     private javax.swing.JButton RefreshItem4;
+    private javax.swing.JButton RefreshItem5;
     private javax.swing.JButton RefreshSummary;
     private javax.swing.JButton RefreshSupplier;
     private javax.swing.JButton RefreshTransactions;
@@ -4686,8 +5767,10 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTextField SearchField;
     private javax.swing.JTextField SearchField1;
     private javax.swing.JPanel StaffAAdmin;
+    private javax.swing.JPanel StaffPanel;
     private javax.swing.JComboBox<String> StaffRole;
     private javax.swing.JTable StaffTables;
+    private javax.swing.JTable StaffTables1;
     private javax.swing.JTextField SupllierID;
     private javax.swing.JTextField SupplierEmail;
     private javax.swing.JTextField SupplierEmailUpdate;
@@ -4699,8 +5782,9 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTextField SupplierNameUpdate;
     private javax.swing.JPanel Suppliers;
     private javax.swing.JTable SuppliersTable;
-    private javax.swing.JList<String> TaskBar;
+    private static javax.swing.JList<String> TaskBar;
     private javax.swing.JScrollPane TransactionTable;
+    private javax.swing.JScrollPane TransactionTable1;
     private javax.swing.JPanel Transactions;
     private javax.swing.JTable TransactionsTable;
     private javax.swing.JButton UpdateProduct;
@@ -4711,11 +5795,16 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel VoidCount;
     private javax.swing.JLabel VoidTotal;
     private javax.swing.JButton addStaff;
+    private javax.swing.JButton deleteTransaction;
+    private javax.swing.JButton deleteTransaction1;
+    private javax.swing.JPanel historyPanel;
+    private javax.swing.JTable historyTable;
     private javax.swing.JTextField idToRemove;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -4747,6 +5836,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
@@ -4782,6 +5872,8 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel72;
     private javax.swing.JLabel jLabel73;
     private javax.swing.JLabel jLabel74;
+    private javax.swing.JLabel jLabel75;
+    private javax.swing.JLabel jLabel79;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -4813,7 +5905,12 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel33;
     private javax.swing.JPanel jPanel34;
     private javax.swing.JPanel jPanel35;
+    private javax.swing.JPanel jPanel36;
+    private javax.swing.JPanel jPanel37;
+    private javax.swing.JPanel jPanel38;
+    private javax.swing.JPanel jPanel39;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel40;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -4824,6 +5921,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JButton logOutButton;
     private javax.swing.JTextField machineID;
     private javax.swing.JTextField machineIDUpdate;
@@ -4844,6 +5942,11 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JButton removeStaffButton1;
     private javax.swing.JButton removeStaffButton2;
     private javax.swing.JPanel removeSupplier;
+    private javax.swing.JButton setDateButton;
+    private javax.swing.JComboBox<String> setDateComboBox;
+    private javax.swing.JComboBox<String> setDateComboBox1;
+    private javax.swing.JPanel setDatePanel;
+    private javax.swing.JPanel setDatePanel2;
     private javax.swing.JComboBox<String> statusComboBox;
     private javax.swing.JTextField statusTextField;
     private javax.swing.JLabel successFulSales;
