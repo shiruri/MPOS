@@ -4,20 +4,19 @@
  */
 
 import Database.Database;
-import static com.sun.java.accessibility.util.SwingEventMonitor.addTableModelListener;
-import java.io.File;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import javax.swing.JButton;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -25,12 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import security.CurrentUser;
@@ -47,7 +44,15 @@ public class Machine extends javax.swing.JFrame {
      * Creates new form Machine
      */
     public Machine() {
-
+      
+    
+           addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            logOutButton.doClick();
+              
+            }
+        });
         this.setExtendedState(this.MAXIMIZED_BOTH);
         initComponents();
         AutoCompleteDecorator.decorate(addItemsComboBox);
@@ -72,13 +77,14 @@ public class Machine extends javax.swing.JFrame {
         Payment = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        paymentMethodComboBox = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         PaymentRecievedField = new javax.swing.JTextField();
         changeField = new javax.swing.JTextField();
         completeTransactionButton = new javax.swing.JButton();
         CountChange = new javax.swing.JToggleButton();
+        jLabel23 = new javax.swing.JLabel();
         productPanel = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         Pos = new javax.swing.JPanel();
@@ -94,9 +100,10 @@ public class Machine extends javax.swing.JFrame {
         total = new javax.swing.JLabel();
         TotalAmountText = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        TotalAmountText1 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
+        TotalAmountText1 = new javax.swing.JComboBox<>();
+        jLabel24 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         ProcessButton = new javax.swing.JButton();
         voidButton = new javax.swing.JButton();
@@ -124,8 +131,6 @@ public class Machine extends javax.swing.JFrame {
         jLabel21 = new javax.swing.JLabel();
         TotalAmount = new javax.swing.JLabel();
         TotalSales = new javax.swing.JLabel();
-        successfullCount = new javax.swing.JLabel();
-        successfullCount1 = new javax.swing.JLabel();
         logOutButton = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         RefreshTransactions1 = new javax.swing.JButton();
@@ -141,6 +146,7 @@ public class Machine extends javax.swing.JFrame {
         machineName = new javax.swing.JLabel();
         machineLocation = new javax.swing.JLabel();
         currentTime = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         jTable2.setBackground(new java.awt.Color(153, 153, 153));
         jTable2.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
@@ -254,8 +260,8 @@ public class Machine extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
         jLabel2.setText("Payment");
 
-        jComboBox1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "Online" }));
+        paymentMethodComboBox.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
+        paymentMethodComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "Online", "Bank" }));
 
         jLabel7.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
         jLabel7.setText("Payment Method");
@@ -265,9 +271,9 @@ public class Machine extends javax.swing.JFrame {
 
         PaymentRecievedField.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
 
-        changeField.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
+        changeField.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
         changeField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        changeField.setEnabled(false);
+        changeField.setFocusable(false);
         changeField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changeFieldActionPerformed(evt);
@@ -290,17 +296,22 @@ public class Machine extends javax.swing.JFrame {
             }
         });
 
+        jLabel23.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
+        jLabel23.setText("Change:");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(133, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(199, 199, 199))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel23)
+                        .addGap(18, 18, 18)
                         .addComponent(changeField, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(178, 178, 178))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
@@ -313,7 +324,7 @@ public class Machine extends javax.swing.JFrame {
                     .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(paymentMethodComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(PaymentRecievedField, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -327,7 +338,7 @@ public class Machine extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(49, 49, 49)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(paymentMethodComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -335,7 +346,9 @@ public class Machine extends javax.swing.JFrame {
                     .addComponent(PaymentRecievedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CountChange))
                 .addGap(30, 30, 30)
-                .addComponent(changeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(changeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23))
                 .addGap(28, 28, 28)
                 .addComponent(completeTransactionButton)
                 .addContainerGap(64, Short.MAX_VALUE))
@@ -358,7 +371,8 @@ public class Machine extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("Terminal");
         setBackground(java.awt.Color.darkGray);
         setSize(new java.awt.Dimension(1280, 720));
 
@@ -417,15 +431,17 @@ public class Machine extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
         jLabel6.setText("Tax:");
 
-        TotalAmountText1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
-        TotalAmountText1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        TotalAmountText1.setText("12%");
-
         jLabel20.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
         jLabel20.setText("Pesos");
 
         jLabel22.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
         jLabel22.setText("Pesos");
+
+        TotalAmountText1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
+        TotalAmountText1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "12", "0" }));
+
+        jLabel24.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
+        jLabel24.setText("%");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -446,17 +462,19 @@ public class Machine extends javax.swing.JFrame {
                         .addGap(85, 85, 85)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(SubTotal1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(TotalAmountText1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(discountField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(TotalAmountText)))
+                                .addComponent(TotalAmountText))
+                            .addComponent(TotalAmountText1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())))
         );
         jPanel2Layout.setVerticalGroup(
@@ -473,18 +491,21 @@ public class Machine extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(discountField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(TotalAmountText1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TotalAmountText1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel24))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(total)
                     .addComponent(TotalAmountText)
                     .addComponent(jLabel20))
-                .addContainerGap(206, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         ProcessButton.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
@@ -576,9 +597,9 @@ public class Machine extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1228, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(PosLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(96, 96, 96)
-                        .addComponent(Process, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Process, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(84, 84, 84)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
@@ -597,7 +618,7 @@ public class Machine extends javax.swing.JFrame {
                                 .addGap(0, 72, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(PosLayout.createSequentialGroup()
-                        .addGap(87, 87, 87)
+                        .addGap(88, 88, 88)
                         .addComponent(Process, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
@@ -735,20 +756,17 @@ public class Machine extends javax.swing.JFrame {
         jTable3.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "ID", "PRODUCT", "USER", "DEVICE", "QUANTITY", "SALETIME", "TOTAL", "STATUS"
+                "ORDERID", "ID", "PRODUCT", "USER", "DEVICE", "QUANTITY", "SALETIME", "TOTAL", "PAYMENTMETHOD", "STATUS", "REVENUE"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Double.class, java.lang.String.class
+                java.lang.Object.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Double.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -844,16 +862,10 @@ public class Machine extends javax.swing.JFrame {
         jLabel21.setText("Total Sale Amount:");
 
         TotalAmount.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
-        TotalAmount.setEnabled(false);
+        TotalAmount.setText("0.00");
 
         TotalSales.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
-        TotalSales.setEnabled(false);
-
-        successfullCount.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 24)); // NOI18N
-        successfullCount.setText("Total Succesfull Sale:");
-
-        successfullCount1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
-        successfullCount1.setEnabled(false);
+        TotalSales.setText("0");
 
         logOutButton.setBackground(java.awt.Color.lightGray);
         logOutButton.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
@@ -872,28 +884,23 @@ public class Machine extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(successfullCount)
-                        .addGap(23, 23, 23)
-                        .addComponent(successfullCount1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel21)
-                        .addGap(42, 42, 42)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(TotalAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel8Layout.createSequentialGroup()
                         .addComponent(count)
-                        .addGap(18, 18, 18)
-                        .addComponent(TotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(276, 276, 276))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(logOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21))
+                        .addGap(34, 34, 34)
+                        .addComponent(TotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(306, 306, 306))
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addGap(246, 246, 246)
                 .addComponent(jLabel19)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(logOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(65, 65, 65))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -901,20 +908,16 @@ public class Machine extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel19)
                 .addGap(45, 45, 45)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(count)
-                    .addComponent(TotalSales))
-                .addGap(18, 18, 18)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(count))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
                     .addComponent(TotalAmount))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(successfullCount)
-                    .addComponent(successfullCount1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 214, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 256, Short.MAX_VALUE)
                 .addComponent(logOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                .addGap(28, 28, 28))
         );
 
         RefreshTransactions1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 18)); // NOI18N
@@ -1091,6 +1094,8 @@ public class Machine extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Settings", Settings);
 
+        jButton1.setText("jButton1");
+
         javax.swing.GroupLayout productPanelLayout = new javax.swing.GroupLayout(productPanel);
         productPanel.setLayout(productPanelLayout);
         productPanelLayout.setHorizontalGroup(
@@ -1099,6 +1104,11 @@ public class Machine extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1274, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(productPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(productPanelLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jButton1)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         productPanelLayout.setVerticalGroup(
             productPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1106,6 +1116,11 @@ public class Machine extends javax.swing.JFrame {
                 .addContainerGap(36, Short.MAX_VALUE)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(productPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(productPanelLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jButton1)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         jTabbedPane1.getAccessibleContext().setAccessibleName("CutomerView");
@@ -1150,22 +1165,49 @@ public class Machine extends javax.swing.JFrame {
                 RefreshItem3.setEnabled(false);
 
                 double subTotal = prods.getTotal();
-
+                String getTax = TotalAmountText1.getSelectedItem().toString();
+                double tax = 0;
+                if(getTax.equalsIgnoreCase("12")) {
+                    tax = 0.12;
+                    System.out.println("0.12");
+                }
                 String strDisc = discountField.getText();
                 DecimalFormat df = new DecimalFormat("#.00");
                 double totalWithTax = (subTotal * 0.12) + subTotal;
                 if (!strDisc.isBlank()) {
                     double discount = Double.parseDouble(strDisc) / 100;
+                    if(tax == 0.12) {
                     double discountAmount = discount * totalWithTax;
                     double totalAmount = totalWithTax - discountAmount;
                     SubTotal1.setText(df.format(totalWithTax));
                     TotalAmountText.setText(df.format(totalAmount));
                     PaymentButton.setEnabled(true);
+                    repaint();
+                    revalidate();
+                    }
+                    else if(tax == 0)  {
+                    double discountAmount = discount * subTotal;
+                    double totalAmount = subTotal - discountAmount;
+                    SubTotal1.setText(df.format(subTotal));
+                    TotalAmountText.setText(df.format(totalAmount));
+                    PaymentButton.setEnabled(true);
+                    repaint();
+                    revalidate();
+                    }
+                  
                 } else {
+                    if(tax == 0.12) {
                     SubTotal1.setText(df.format(totalWithTax));
                     TotalAmountText.setText(df.format(totalWithTax));
                     PaymentButton.setEnabled(true);
-
+                    }
+                    else if(tax == 0) {
+                     SubTotal1.setText(df.format(subTotal));
+                    TotalAmountText.setText(df.format(subTotal));
+                    PaymentButton.setEnabled(true);
+                    }
+                   
+                    
                 }
 
             }
@@ -1178,9 +1220,13 @@ public class Machine extends javax.swing.JFrame {
     private void voidButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voidButtonActionPerformed
         // TODO add your handling code here:
         try {
-
+            String getText = TotalAmountText.getText();
             if (TransactionsTable.getRowCount() <= 0) {
                 JOptionPane.showMessageDialog(null, "No Orders");
+           
+            } else if (getText.equalsIgnoreCase("TotalAmount") || getText.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please Process Order First!");
+
             } else {
                 int choice = JOptionPane.showConfirmDialog(
                         null,
@@ -1188,13 +1234,22 @@ public class Machine extends javax.swing.JFrame {
                         "MPOS",
                         JOptionPane.YES_NO_OPTION);
                 if (choice == 0) {
+                    String totalAmount = TotalAmountText.getText();
 
+                    double total = Double.parseDouble(totalAmount);
                     LocalDateTime currentDate = LocalDateTime.now();
                     DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                     String datee = currentDate.format(format);
                     Product prods = new Product(); // reusable code perhaps??
                     Database b = new Database();
                     Connection con = b.getCon();
+                    Random rand = new Random();
+                    String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+                    String randString = "";
+                    for (int i = 0; i < 5; i++) {
+                        char letter = abc.charAt(rand.nextInt(abc.length()));
+                        randString += letter;
+                    }
 
                     double subTotal = prods.getTotal();
 
@@ -1207,17 +1262,20 @@ public class Machine extends javax.swing.JFrame {
                     currentUser = (CurrentUser) in.readObject();
                     file.close();
                     in.close();
-
-                    String updateTransaction = "insert into transactions (id,products,user,device,saletime,total,status) values (?,?,?,?,?,?,?);";
+                    Product prod = new Product();
+                    String updateTransaction = "insert into transactions (order_id,id,products,user,device,saletime,total,payment_method,revenue,total_cost,status) values (?,?,?,?,?,?,?,?,?,?,?);";
                     PreparedStatement prep = con.prepareStatement(updateTransaction);
-
-                    prep.setString(1, currentUser.getCurrentUserID());
-                    prep.setInt(2, prods.getQuantityTotal());
-                    prep.setString(3, currentUser.getCurrentUserName());
-                    prep.setString(4, currentUser.getCurrentMachine());
-                    prep.setString(5, datee);
-                    prep.setDouble(6, subTotal);
-                    prep.setString(7, "Voided");
+                    prep.setString(1, randString);
+                    prep.setString(2, currentUser.getCurrentUserID());
+                    prep.setInt(3, prod.getQuantityTotal());
+                    prep.setString(4, currentUser.getCurrentUserName());
+                    prep.setString(5, currentUser.getCurrentMachine());
+                    prep.setString(6, datee);
+                    prep.setDouble(7, total);
+                    prep.setString(8, "N/A");
+                    prep.setString(9, "0.00");
+                    prep.setString(10, "0.00");
+                    prep.setString(11, "Voided");
                     prep.executeUpdate();
                     
                     HashMap<Integer,Integer> prodss = prods.getMap();
@@ -1229,16 +1287,16 @@ public class Machine extends javax.swing.JFrame {
                     TotalAmountText.setText("TotalAmount");
                     RefreshItem3.setEnabled(true);
                     prodss.clear();
-
-                     prods.resetQuantitProds();
+                    prod.resetQuantitProds();
+                    prod.resetRevenueCost();
                      prods.resetTotals();
-                    JOptionPane.showMessageDialog(this, "Voided Orders");
+                    JOptionPane.showMessageDialog(null, "Voided Orders");
 
                 }
 
             }
         } catch (Exception e) {
-
+            System.out.println("Error: +e"+e);
         }
 
     }//GEN-LAST:event_voidButtonActionPerformed
@@ -1368,9 +1426,18 @@ public class Machine extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_ItemsTableFocusGained
-
     public static void main(String[] args) {
+
         java.awt.EventQueue.invokeLater(() -> new Machine().setVisible(true));
+        RefreshTransactions1.doClick();
+        RefreshItem2.doClick();
+        RefreshTransactions.doClick();
+     
+       
+              
+
+        
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -1395,6 +1462,7 @@ public class Machine extends javax.swing.JFrame {
     static ArrayList<Double> totals = new ArrayList<>();
     static  ArrayList<Integer> quantityProds = new ArrayList<>();
     static ArrayList<Product> recieptTaker = new ArrayList<>();
+    static ArrayList<Product> unitCosts = new ArrayList<>();
     
     private void EnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnterActionPerformed
         // TODO add your handling code here:
@@ -1407,7 +1475,7 @@ public class Machine extends javax.swing.JFrame {
             ArrayList<Product> prods = new ArrayList<>();
            
             
-            String sql = "select id,name,category,quantity,price from items where name = ?";
+            String sql = "select id,name,category,quantity,price,unit_cost from items where name = ?";
             PreparedStatement prep = con.prepareStatement(sql);
             prep.setString(1, name);
             ResultSet rs = prep.executeQuery();
@@ -1418,6 +1486,7 @@ public class Machine extends javax.swing.JFrame {
             String category = "";
             int quantity = 0;
             double price = 0;
+            double cost = 0;
             Product c = new Product();
             while (rs.next()) {
 
@@ -1425,6 +1494,7 @@ public class Machine extends javax.swing.JFrame {
                 names = rs.getString("name");
                 category = rs.getString("category");
                 quantity = rs.getInt("quantity");
+                cost = rs.getDouble("unit_cost");
                 price = rs.getDouble("price");
 
             }
@@ -1441,15 +1511,21 @@ public class Machine extends javax.swing.JFrame {
                         if (quantityProd <= quantityOfItem) {
                             Product products = new Product(id, names, category, quantityProd, price);
                             Product recieptTake = new Product(names, quantityProd, price);
+                            Product revenueCount = new Product(names,cost,quantityProd);
+                            unitCosts.add(revenueCount);
+                            c.setRevenueCost(unitCosts);
+                            
                             prods.add(products);
                             quantityProds.add(quantityProd);
                             sum = price * quantityProd;
                             totals.add(sum);
-                           
+
                             c.addMap(id,quantityProd);
                             c.setTotalQuantity(quantityProds);
                             c.setTotal(totals);
                             recieptTaker.add(recieptTake);
+                         
+                            
                             // idk find a way for the roiw inserstion
                             DefaultTableModel model = (DefaultTableModel) TransactionsTable.getModel();
                             int rows = model.getRowCount();
@@ -1459,6 +1535,7 @@ public class Machine extends javax.swing.JFrame {
                                 model.addColumn("Product");
                                 model.addColumn("Category");
                                 model.addColumn("Quantity");
+                                model.addColumn("Price");
                                 model.addColumn("Price");
                             }
                           
@@ -1490,6 +1567,9 @@ public class Machine extends javax.swing.JFrame {
                         Product products = new Product(id, names, category, quantityProd, price);
                         Product recieptTake = new Product(names,quantityProd,price);
                         prods.add(products);
+                        Product revenueCount = new Product(names, cost, quantityProd);
+                        unitCosts.add(revenueCount);
+                        revenueCount.setRevenueCost(unitCosts);
                         quantityProds.add(quantityProd);
                         sum = price * quantityProd;
                         totals.add(sum);
@@ -1497,6 +1577,8 @@ public class Machine extends javax.swing.JFrame {
                         c.setTotalQuantity(quantityProds);
                         c.setTotal(totals);
                         recieptTaker.add(recieptTake);
+
+                            
                         // idk find a way for the roiw inserstion
                         DefaultTableModel model = (DefaultTableModel) TransactionsTable.getModel();
                         int rows = model.getRowCount();
@@ -1542,11 +1624,9 @@ public class Machine extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Unable To Add Product (No Stock)");
 
             }
-
             repaint();
             revalidate();
         } catch (Exception e) {
-           
         }
 
 
@@ -1600,7 +1680,7 @@ public class Machine extends javax.swing.JFrame {
         if (paymentParsed >= total) {
             double change = paymentParsed - total;
             NumberFormat formatter = new DecimalFormat("#0.00");
-            changeField.setText("Change: " + formatter.format(change));
+            changeField.setText(formatter.format(change));
         } else {
             JOptionPane.showMessageDialog(null, "Invalid Amount");
         }
@@ -1614,10 +1694,13 @@ public class Machine extends javax.swing.JFrame {
     private void completeTransactionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeTransactionButtonActionPerformed
         // TODO add your handling code here:
         try {
-
+            String tax = "";
             String totalAmount = TotalAmountText.getText();
             String paymentRecieved = PaymentRecievedField.getText();
-
+            String stringTax = TotalAmountText1.getSelectedItem().toString();
+            if(stringTax.equalsIgnoreCase("0")) {
+                tax = "Zero";
+            }
             double paymentParsed = Double.parseDouble(paymentRecieved);
             double total = Double.parseDouble(totalAmount);
             if (paymentParsed < total) {
@@ -1630,23 +1713,46 @@ public class Machine extends javax.swing.JFrame {
                 currentUser = (CurrentUser) in.readObject();
                 file.close();
                 in.close();
+                Random rand = new Random();
                 LocalDateTime currentDate = LocalDateTime.now();
-
+                String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+                String randString = "";
+                for (int i = 0; i < 5; i++) {
+                    char letter = abc.charAt(rand.nextInt(abc.length()));
+                    randString += letter;
+                }
+                String paymentMethod = paymentMethodComboBox.getSelectedItem().toString();
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                 String datee = currentDate.format(format);
                 Product prod = new Product();
+                ArrayList<Product> unitCosts = prod.getRevenueCost();
+                double totalUnitCost = 0;
+                for(int i = 0; i < unitCosts.size(); i++) {
+                    String productName = unitCosts.get(i).getProductName();
+                    double productUnitCost = unitCosts.get(i).getUnitCost();
+                    int productQuantity = unitCosts.get(i).getQuantity();
+                    double sums = productUnitCost * productQuantity;
+                    totalUnitCost += sums;
+                    
+                }
+                double revenue = total - totalUnitCost;
+                
                 Database b = new Database();
                 Connection con = b.getCon();
                 Statement stmt = con.createStatement();
-                String updateTransaction = "insert into transactions (id,products,user,device,saletime,total,status) values (?,?,?,?,?,?,?);";
+                String updateTransaction = "insert into transactions (order_id,id,products,user,device,saletime,total,payment_method,revenue,total_cost,status) values (?,?,?,?,?,?,?,?,?,?,?);";
                 PreparedStatement prep = con.prepareStatement(updateTransaction);
-                prep.setString(1, currentUser.getCurrentUserID());
-                prep.setInt(2, prod.getQuantityTotal());
-                prep.setString(3, currentUser.getCurrentUserName());
-                prep.setString(4, currentUser.getCurrentMachine());
-                prep.setString(5, datee);
-                prep.setDouble(6, total);
-                prep.setString(7, "Completed");
+                prep.setString(1,randString );
+                prep.setString(2, currentUser.getCurrentUserID());
+                prep.setInt(3, prod.getQuantityTotal());
+                prep.setString(4, currentUser.getCurrentUserName());
+                prep.setString(5, currentUser.getCurrentMachine());
+                prep.setString(6, datee);
+                prep.setDouble(7, total);
+                prep.setString(8, paymentMethod);
+                prep.setDouble(9, revenue);
+                prep.setDouble(10,totalUnitCost );
+                prep.setString(11, "Completed");
                 prep.executeUpdate();
 
                 // update quantity
@@ -1687,13 +1793,6 @@ public class Machine extends javax.swing.JFrame {
                     int rows = model.getRowCount();
                     LocalDateTime currentDatee = LocalDateTime.now();
                     DateTimeFormatter formats = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                    Random rand = new Random();
-                    String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-                    String randString = "";
-                    for(int i = 0; i < 5; i++) {
-                    char letter = abc.charAt(rand.nextInt(abc.length()));
-                    randString += letter;  
-                    }
                    
                     String filenamem = "C:\\Mpos\\MposReciepts\\MposReciepts"+ formats.format(currentDatee) + "_"+randString+"_log"+"_.txt";
   
@@ -1728,7 +1827,27 @@ public class Machine extends javax.swing.JFrame {
                                       + "==========================================================\n"
                                       + "TOTAL:                                    PHP "+totalTotal+"\n"
                                       + "Cash:                                         "+custPayement+"\n"
-                                      + "Change:                                   "+custChange+"\n"
+                                       + "Change:                                   "+custChange+"\n"
+                                      + "Payement Method:                            "+paymentMethod+"\n"
+                                      + "==========================================================\n"
+                                      + "Cust Name:_______________________________________________ \n"
+                                      + "  Address:_______________________________________________ \n"
+                                      + "  TIN:___________________________________________________ \n"
+                                      + "  SIGN:__________________________________________________ \n"
+                                      + "==========================================================\n"
+                                      + "                                                          \n"
+                                      + "               Thank you For Shopping With Us!            \n"
+                                      + "                                                          \n"
+                                      + "==========================================================\n";
+                  String recieptBodyWithZeroTax  = "==========================================================\n"
+                                      + "SubTotal:                                    "+subTotall+"\n"
+                                      + "VATABLE SALES:                               "+tax+"\n"
+                                      + "VAT AMT:                                     "+tax+"   \n"
+                                      + "==========================================================\n"
+                                      + "TOTAL:                                    PHP "+totalTotal+"\n"
+                                      + "Cash:                                         "+custPayement+"\n"
+                                       + "Change:                                   "+custChange+"\n"
+                                      + "Payement Method:                            "+paymentMethod+"\n"
                                       + "==========================================================\n"
                                       + "Cust Name:_______________________________________________ \n"
                                       + "  Address:_______________________________________________ \n"
@@ -1759,10 +1878,14 @@ public class Machine extends javax.swing.JFrame {
                         filem.write(productsList);
                     }
                     recieptTaker.clear();
-             
-                    filem.write(recieptBody);
-                    
-                    
+                   
+             if (tax.equalsIgnoreCase("Zero")) {
+                        filem.write(recieptBodyWithZeroTax);
+
+                    } else {
+                        filem.write(recieptBody);
+                    }
+        
                     JOptionPane.showMessageDialog(null, "Reciept Made!");
                     filem.close();
 
@@ -1799,6 +1922,7 @@ public class Machine extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
+            System.out.println("ERrorL: "+ e);
         }
 
 
@@ -1806,8 +1930,9 @@ public class Machine extends javax.swing.JFrame {
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutButtonActionPerformed
         // TODO add your handling code here:
-        CurrentUser user = new CurrentUser();
-
+        CurrentUser user =  null;
+        
+          
         int n = JOptionPane.showConfirmDialog(
                 null,
                 "Log out of the current session?",
@@ -1815,27 +1940,38 @@ public class Machine extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION);
         if (n == 0) {
             try {
+                  String filenamess = "log.txt";
+                CurrentUser currentUserrr = null;
+                FileInputStream file = new FileInputStream(filenamess);
+                ObjectInputStream in = new ObjectInputStream(file);
+                user = (CurrentUser) in.readObject();
+                file.close();
+                in.close();
                 Database b = new Database();
                 Connection con = b.getCon();
                 Statement stmt = con.createStatement();
 
-                String sqlUpdateUser = "update staffandadmin set status = 'Offline' where id = ?";
-                String sqlUpdateMachine = "update machines set status = 'Offline' where name = ?";
+                String sqlUpdateUser = "update staffandadmin set status = 'Offline', activeCount = 0 where id = ? ";
+                String sqlUpdateMachine = "update machines set status = 'Offline' where name = ?;";
 
                 PreparedStatement prep = con.prepareStatement(sqlUpdateUser);
-                PreparedStatement prep2 = con.prepareStatement(sqlUpdateUser);
+                PreparedStatement prep2 = con.prepareStatement(sqlUpdateMachine);
 
                 prep.setString(1, user.getCurrentUserID());
                 prep2.setString(1, user.getCurrentMachine());
+                
                 prep.executeUpdate();
-
+                prep2.executeUpdate();
+                
                 user.setCurrentUserName(null);
                 user.setCurrentUserID(null);
                 user.setCurrentMachine(null);
                 user.setCurrentLocation(null);
+                user.setCurrentRole(null);
+                CurrentUser resetUser = new CurrentUser(user.getCurrentUserName(),user.getCurrentUserID(),user.getCurrentMachine(),user.getCurrentLocation(),user.getCurrentRole());
                 String filename = "log.txt";
-                FileOutputStream file = new FileOutputStream(filename);
-                ObjectOutputStream out = new ObjectOutputStream(file);
+                FileOutputStream files = new FileOutputStream(filename);
+                ObjectOutputStream out = new ObjectOutputStream(files);
                 out.writeObject(user);
                 out.close();
                 file.close();
@@ -1843,7 +1979,7 @@ public class Machine extends javax.swing.JFrame {
                 dispose();
 
             } catch (Exception e) {
-
+                System.out.println("Error: "+e);
             }
 
         }
@@ -1860,24 +1996,24 @@ public class Machine extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
 
-            CurrentUser user = new CurrentUser();
+          
 
-            String filename = "log.txt";
-            CurrentUser currentUser = null;
-            FileInputStream file = new FileInputStream(filename);
-            ObjectInputStream in = new ObjectInputStream(file);
-            currentUser = (CurrentUser) in.readObject();
-            file.close();
-            in.close();
-            userName.setText(currentUser.getCurrentUserName());
-            machineID.setText(currentUser.getCurrentUserID());
-            machineName.setText(currentUser.getCurrentMachine());
-            machineLocation.setText(currentUser.getCurrentLocation());
+            String filenamess = "log.txt";
+                CurrentUser currentUserrr = null;
+                FileInputStream file = new FileInputStream(filenamess);
+                ObjectInputStream in = new ObjectInputStream(file);
+                currentUserrr = (CurrentUser) in.readObject();
+                file.close();
+                in.close();
+            
+            userName.setText(currentUserrr.getCurrentUserName());
+            machineID.setText(currentUserrr.getCurrentUserID());
+            machineName.setText(currentUserrr.getCurrentMachine());
+            machineLocation.setText(currentUserrr.getCurrentLocation());
             LocalDateTime currentDate = LocalDateTime.now();
             DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
             currentTime.setText("" + currentDate.format(format));
-          
         
 
             
@@ -1887,7 +2023,7 @@ public class Machine extends javax.swing.JFrame {
             repaint();
             revalidate();
         } catch (Exception e) {
-
+            System.out.println("E: "+e);
         }
 
 
@@ -1895,37 +2031,44 @@ public class Machine extends javax.swing.JFrame {
 
     private void RefreshTransactionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshTransactionsActionPerformed
         // TODO add your handling code here:
-        try {
+       try {
+            String filenamess = "log.txt";
+                CurrentUser currentUserrr = null;
+                FileInputStream file = new FileInputStream(filenamess);
+                ObjectInputStream in = new ObjectInputStream(file);
+                currentUserrr = (CurrentUser) in.readObject();
+                file.close();
+                in.close();
             Database b = new Database();
             Connection con = b.getCon();
             Statement stmt = con.createStatement();
-
-            String filename = "log.txt";
-            CurrentUser currentUser = null;
-            FileInputStream file = new FileInputStream(filename);
-            ObjectInputStream in = new ObjectInputStream(file);
-            currentUser = (CurrentUser) in.readObject();
-            file.close();
-            in.close();
-            String sqlTransactions = "Select * from transactions where id = ?;";
-            PreparedStatement prep = con.prepareStatement(sqlTransactions);
-            prep.setString(1, currentUser.getCurrentUserID());
-            ResultSet rs = prep.executeQuery();
-            String[] columnNames = {"ID", "Products", "User", "Device", "SaleTime", "Total", "Status"};
-
-            DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-            Employee emp = new Employee();
+            
+            String sqlTransactions = "Select order_id,id,products,user,device,saletime,total,payment_method,revenue,status from transactions where id = ? ";
+             PreparedStatement prep = con.prepareStatement(sqlTransactions);
+             prep.setString(1, currentUserrr.getCurrentUserID());
+             ResultSet rs = prep.executeQuery();
+             String[] columnNames = {"OrderID","ID", "Products", "User","Device","SaleTime","Total","Payment Method","Revenue","Status"};
+             
+             DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+             Employee emp = new Employee();
             while (rs.next()) {
+                String orderID = rs.getString("order_id");
                 String Id = rs.getString("ID");
                 String Product = rs.getString("Products");
                 String User = rs.getString("User");
                 String Device = rs.getString("Device");
                 String SaleTime = rs.getString("SaleTime");
                 String Total = rs.getString("Total");
+                String paymentMethod = rs.getString("payment_method");
+                String Revenue = rs.getString("revenue");
                 String Status = rs.getString("Status");
-
+                if(Status.equalsIgnoreCase("Voided")) {
+                    Revenue = "0.00";
+                }
+               
+               
                 // create a single array of one row's worth of data
-                String[] data = {Id, Product, User, Device, SaleTime, Total, Status};
+                String[] data = {orderID,Id, Product, User,Device,SaleTime,Total,paymentMethod,Revenue,Status};
                 tableModel.addRow(data);
             }
             jTable3.setModel(tableModel);
@@ -1934,78 +2077,49 @@ public class Machine extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error Retrieving data");
         }
+      
 
     }//GEN-LAST:event_RefreshTransactionsActionPerformed
 
     private void RefreshTransactions1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshTransactions1ActionPerformed
         // TODO add your handling code here:
-          try {
-
-            CurrentUser user = new CurrentUser();
-
-            String filename = "log.txt";
-            CurrentUser currentUser = null;
-            FileInputStream file = new FileInputStream(filename);
-            ObjectInputStream in = new ObjectInputStream(file);
-            currentUser = (CurrentUser) in.readObject();
-            file.close();
-            in.close();
-            userName.setText(currentUser.getCurrentUserName());
-            machineID.setText(currentUser.getCurrentUserID());
-            machineName.setText(currentUser.getCurrentMachine());
-            machineLocation.setText(currentUser.getCurrentLocation());
-            LocalDateTime currentDate = LocalDateTime.now();
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-            SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-            currentTime.setText("" + currentDate.format(format));
+         try {
             Database b = new Database();
             Connection con = b.getCon();
+            Statement stmt = con.createStatement();
+             String filenamess = "log.txt";
+            CurrentUser currentUserrr = null;
+            FileInputStream file = new FileInputStream(filenamess);
+            ObjectInputStream in = new ObjectInputStream(file);
+            currentUserrr = (CurrentUser) in.readObject();
+            file.close();
+             in.close();
+             String sqlGetSuccessfullSales = "select sum(revenue) from transactions where status ='Completed' and id = ?;";
+
+             String sqlGetCount = "select count(*) from transactions where id = ?;";
+             String sqlGetCountSales = "select sum(revenue) from transactions where id  = ?;";
+             
+             PreparedStatement prep1 = con.prepareStatement(sqlGetSuccessfullSales);
+             PreparedStatement prep2 = con.prepareStatement(sqlGetCount);
+             PreparedStatement prep3 = con.prepareStatement(sqlGetCountSales);
+             
+             prep1.setString(1, currentUserrr.getCurrentUserID());
+             prep2.setString(1, currentUserrr.getCurrentUserID());
+             
+             ResultSet rs1 = prep1.executeQuery();
+             ResultSet rs2 = prep2.executeQuery();
+             while(rs1.next()) {
+                 TotalAmount.setText(""+rs1.getDouble(1));
+             }
+             while(rs2.next()) {
+                 TotalSales.setText(""+rs2.getInt(1));
+             }
+            
          
-            String sqlGetSuccessfull = "select count(*) from transactions where status ='Completed' and id = ?;";
-            String sqlGetCount = "select count(*) from transactions where id = ?;";
-            String sqlGetTotalSales = "SELECT SUM(total) from transactions where id = ?;";
-            
-            PreparedStatement prep1 = con.prepareStatement(sqlGetSuccessfull);
-            PreparedStatement prep2 = con.prepareStatement(sqlGetCount);
-            PreparedStatement prep3 = con.prepareStatement(sqlGetTotalSales);
-      
-            prep1.setString(1, currentUser.getCurrentUserID());
-            prep2.setString(1, currentUser.getCurrentUserID());
-            prep3.setString(1, currentUser.getCurrentUserID());
-            
-            ResultSet rs = prep1.executeQuery();
-            ResultSet rs2 = prep2.executeQuery();
-            ResultSet rs3 = prep3.executeQuery();
-
-           
-            
-            while (rs.next()) {
-              int  successCount = rs.getInt(1);
-                successfullCount1.setText(successCount + "");
-            }
-            rs.close();
-            while (rs2.next()) {
-                int totalCount = rs2.getInt(1);
-                TotalSales.setText(totalCount + "");
-            }
-            rs2.close();
-
-            while (rs3.next()) {
-                double totalTransactionSale = rs3.getDouble(1);
-                DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
-                TotalAmount.setText(""+formatter.format(totalTransactionSale)+" Pesos");
-
-            }
-            rs3.close();
-
-            
-            
-            
-          
             repaint();
             revalidate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " );
+            JOptionPane.showMessageDialog(null, "Error Retrieving data"+e);
         }
     }//GEN-LAST:event_RefreshTransactions1ActionPerformed
 
@@ -2026,15 +2140,15 @@ public class Machine extends javax.swing.JFrame {
     private javax.swing.JPanel Process;
     private javax.swing.JButton ProcessButton;
     private javax.swing.JPanel Products;
-    private javax.swing.JButton RefreshItem2;
+    private static javax.swing.JButton RefreshItem2;
     private javax.swing.JButton RefreshItem3;
-    private javax.swing.JButton RefreshTransactions;
-    private javax.swing.JButton RefreshTransactions1;
+    private static javax.swing.JButton RefreshTransactions;
+    private static javax.swing.JButton RefreshTransactions1;
     private javax.swing.JPanel Settings;
     private javax.swing.JLabel SubTotal1;
     private javax.swing.JLabel TotalAmount;
     private javax.swing.JLabel TotalAmountText;
-    private javax.swing.JLabel TotalAmountText1;
+    private javax.swing.JComboBox<String> TotalAmountText1;
     private javax.swing.JLabel TotalSales;
     private javax.swing.JScrollPane TransactionTable;
     private javax.swing.JScrollPane TransactionTable1;
@@ -2047,8 +2161,8 @@ public class Machine extends javax.swing.JFrame {
     private javax.swing.JLabel count;
     private javax.swing.JLabel currentTime;
     private javax.swing.JTextField discountField;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2064,6 +2178,8 @@ public class Machine extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2089,9 +2205,8 @@ public class Machine extends javax.swing.JFrame {
     private javax.swing.JLabel machineID;
     private javax.swing.JLabel machineLocation;
     private javax.swing.JLabel machineName;
+    private javax.swing.JComboBox<String> paymentMethodComboBox;
     private javax.swing.JPanel productPanel;
-    private javax.swing.JLabel successfullCount;
-    private javax.swing.JLabel successfullCount1;
     private javax.swing.JLabel total;
     private javax.swing.JLabel userName;
     private javax.swing.JButton voidButton;

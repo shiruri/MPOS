@@ -7,6 +7,24 @@ public class Product {
     Product(){
         
     }
+    public Product(String name,double unitCost, int productQuantity) {
+        this.productName = name;
+        this.unitCost = unitCost;
+        this.quantity = productQuantity;
+    }
+    
+    static ArrayList<Product> revenueCosts;
+    public void setRevenueCost(ArrayList<Product>revenueCosts) {
+        this.revenueCosts = revenueCosts;
+    }
+    public ArrayList<Product> getRevenueCost() {
+        return this.revenueCosts;
+    }
+    public void resetRevenueCost(){
+     revenueCosts.clear();
+    }
+        
+
 
     public int getProductID() {
         return productID;
@@ -55,14 +73,33 @@ public class Product {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    
     private int productID;
     private String productName;
     private String productCategory;
     private double productTax;
     private int quantity;
     private double price;
+    private double unitCost;
 
-    public Product(int productID, String productName, String productCategory, int quantity, double price) {
+    public double getUnitCost() {
+        return unitCost;
+    }
+
+    public void setUnitCost(double unitCost) {
+        this.unitCost = unitCost;
+    }
+
+    public Product(int productID, String productName, String productCategory, int quantity, double price,double unitCost) {
+        this.productID = productID;
+        this.productName = productName;
+        this.productCategory = productCategory;
+        this.quantity = quantity;
+        this.price = price;
+        this.unitCost = unitCost;
+    }
+      public Product(int productID, String productName, String productCategory, int quantity, double price) {
         this.productID = productID;
         this.productName = productName;
         this.productCategory = productCategory;
@@ -137,7 +174,6 @@ public class Product {
     }
 
     public void setTotal(ArrayList<Double> totals) {
-        System.out.println("Moew 1");
         this.totals = totals;
         
     }

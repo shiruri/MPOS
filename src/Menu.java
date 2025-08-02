@@ -1,12 +1,15 @@
 
 import Database.Database;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import security.hash;
 import security.login;
 
@@ -44,6 +47,9 @@ public class Menu extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
+        machinePanel = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        comboMachine1 = new javax.swing.JComboBox<>();
         parentPane = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -52,12 +58,9 @@ public class Menu extends javax.swing.JFrame {
         username = new javax.swing.JTextField();
         password = new javax.swing.JPasswordField();
         login = new javax.swing.JButton();
-        comboMachine = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
 
         jButton2.setText("jButton2");
 
@@ -108,17 +111,67 @@ public class Menu extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jLabel7.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
+        jLabel7.setText("Select Machine");
+
+        comboMachine1.setBackground(java.awt.Color.gray);
+        comboMachine1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
+        comboMachine1.setForeground(java.awt.Color.white);
+        comboMachine1.setBorder(null);
+        comboMachine1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                comboMachine1FocusGained(evt);
+            }
+        });
+        comboMachine1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                comboMachine1MouseClicked(evt);
+            }
+        });
+        comboMachine1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboMachine1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout machinePanelLayout = new javax.swing.GroupLayout(machinePanel);
+        machinePanel.setLayout(machinePanelLayout);
+        machinePanelLayout.setHorizontalGroup(
+            machinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 492, Short.MAX_VALUE)
+            .addGroup(machinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(machinePanelLayout.createSequentialGroup()
+                    .addGap(98, 98, 98)
+                    .addComponent(jLabel7)
+                    .addGap(56, 56, 56)
+                    .addComponent(comboMachine1, 0, 145, Short.MAX_VALUE)
+                    .addGap(98, 98, 98)))
+        );
+        machinePanelLayout.setVerticalGroup(
+            machinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 198, Short.MAX_VALUE)
+            .addGroup(machinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(machinePanelLayout.createSequentialGroup()
+                    .addGap(87, 87, 87)
+                    .addGroup(machinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(comboMachine1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel7))
+                    .addContainerGap(87, Short.MAX_VALUE)))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MPOS");
         setBackground(java.awt.SystemColor.activeCaptionBorder);
         setSize(new java.awt.Dimension(1280, 720));
 
-        parentPane.setBackground(java.awt.Color.darkGray);
+        parentPane.setBackground(java.awt.Color.white);
         parentPane.setMaximumSize(new java.awt.Dimension(1920, 1080));
         parentPane.setPreferredSize(new java.awt.Dimension(1280, 720));
 
-        jPanel3.setBackground(java.awt.Color.gray);
+        jPanel3.setBackground(java.awt.Color.white);
+        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, java.awt.Color.black));
 
-        jPanel4.setBackground(java.awt.Color.gray);
+        jPanel4.setBackground(java.awt.Color.white);
 
         jLabel2.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
         jLabel2.setText("Enter Employee ID:");
@@ -129,6 +182,7 @@ public class Menu extends javax.swing.JFrame {
         username.setBackground(java.awt.Color.lightGray);
         username.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
         username.setBorder(null);
+        username.setInputVerifier(new MyInputVerifier());
         username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 usernameActionPerformed(evt);
@@ -154,51 +208,24 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        comboMachine.setBackground(java.awt.Color.gray);
-        comboMachine.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
-        comboMachine.setForeground(java.awt.Color.white);
-        comboMachine.setBorder(null);
-        comboMachine.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                comboMachineFocusGained(evt);
-            }
-        });
-        comboMachine.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                comboMachineMouseClicked(evt);
-            }
-        });
-        comboMachine.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboMachineActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 14)); // NOI18N
-        jLabel5.setText("Select Machine");
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(85, 85, 85)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(143, 143, 143)
-                        .addComponent(login))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(56, 56, 56)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(username)
-                            .addComponent(comboMachine, 0, 145, Short.MAX_VALUE)
-                            .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))))
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(56, 56, 56)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(username)
+                    .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                .addContainerGap(107, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(login)
+                .addGap(234, 234, 234))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -211,13 +238,9 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboMachine, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addGap(117, 117, 117)
                 .addComponent(login)
-                .addGap(49, 49, 49))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         jLabel4.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 36)); // NOI18N
@@ -269,7 +292,7 @@ public class Menu extends javax.swing.JFrame {
                     .addContainerGap(186, Short.MAX_VALUE)))
         );
 
-        jPanel2.setBackground(java.awt.SystemColor.controlDkShadow);
+        jPanel2.setBackground(java.awt.Color.lightGray);
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel2.setPreferredSize(new java.awt.Dimension(100, 720));
 
@@ -277,21 +300,6 @@ public class Menu extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logo.png"))); // NOI18N
         jLabel1.setText("MPOS");
-
-        jButton1.setBackground(java.awt.Color.darkGray);
-        jButton1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 18)); // NOI18N
-        jButton1.setText("Login");
-        jButton1.setBorder(null);
-        jButton1.setContentAreaFilled(false);
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButton1.setFocusCycleRoot(true);
-        jButton1.setFocusPainted(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -301,16 +309,13 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addComponent(jLabel1)
                 .addContainerGap(39, Short.MAX_VALUE))
-            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(52, 52, 52)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(82, 82, 82)
-                .addComponent(jButton1)
-                .addContainerGap(506, Short.MAX_VALUE))
+                .addContainerGap(613, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -337,10 +342,6 @@ public class Menu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernameActionPerformed
@@ -350,18 +351,28 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_passwordActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
+  try {
+      try {
 
         login log = new login();
         Employee e = new Employee();
         String id = username.getText();
+        String regex = "1234567890";
+       
         String passwordd = password.getText();
         String parsed = passwordd.toString();
-        String Machine =  comboMachine.getSelectedItem().toString();
+                String Machine = "";
 
-        try {
+     
+    
+      if (id.isBlank() || parsed.isBlank()) {
+          JOptionPane.showMessageDialog(null, "Please Fill The Values");
+
+      }
+    
             
-            boolean validate = log.validateLogin(id,parsed,parentPane,Machine);
-            if (validate == true) {
+            
+            if (log.validateLogin(id,parsed,machinePanel,comboMachine1) == true) {
                 
                 try {
                     Database b = new Database();
@@ -382,31 +393,30 @@ public class Menu extends javax.swing.JFrame {
                         String choice = jComboBox1.getSelectedItem().toString();
                         if (choice.equalsIgnoreCase("Admin Dashboard")) {
                             java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
-                        } else if (choice.equalsIgnoreCase("View Pos Machine")) {
+                        } else if (choice.equalsIgnoreCase("View POS Machine")) {
                             java.awt.EventQueue.invokeLater(() -> new Machine().setVisible(true));
-
                         }
+                   
                     } else if (role.equalsIgnoreCase("Employee")) {
                         JOptionPane.showMessageDialog(null, "Log in succesfull");
+                        JOptionPane.showMessageDialog(null, "Logging in to POS");
 
                         java.awt.EventQueue.invokeLater(() -> new Machine().setVisible(true));
                     }
-                    else {
-                       JOptionPane.showMessageDialog(null, "Login Error");
 
-                    }
 
-                    
                     
                     
                         dispose();  
-                }catch(Exception eb) {
-                                JOptionPane.showMessageDialog(null, "Login Error");
+              } catch (Exception eb) {
+                  JOptionPane.showMessageDialog(null, "Login Error");
 
-                }
-               
-            } else {
-            }
+              }
+
+          } else {
+              JOptionPane.showMessageDialog(null, "Incorrect ID or Password! / Unable To login at the moment");
+
+          }
         } catch (ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Login Error");
             System.getLogger(Menu.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -415,6 +425,9 @@ public class Menu extends javax.swing.JFrame {
 
             System.getLogger(Menu.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+    }catch (NumberFormatException nfe) {
+        JOptionPane.showMessageDialog(null, "Please Input A Valid ID");
+    }
 
         
 
@@ -422,35 +435,22 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_loginActionPerformed
 
-    private void comboMachineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboMachineActionPerformed
+  
+    private void comboMachine1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_comboMachine1FocusGained
         // TODO add your handling code here:
-    }//GEN-LAST:event_comboMachineActionPerformed
+    }//GEN-LAST:event_comboMachine1FocusGained
 
-    private void comboMachineMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboMachineMouseClicked
+    private void comboMachine1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboMachine1MouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_comboMachineMouseClicked
+    }//GEN-LAST:event_comboMachine1MouseClicked
 
-    private void comboMachineFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_comboMachineFocusGained
+    private void comboMachine1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboMachine1ActionPerformed
         // TODO add your handling code here:
-             try {
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-
-            Database b = new Database();
-            Connection con = b.getCon();
-            Statement stmt = con.createStatement();
-            String sqlComboBox = "Select name from machines";
-            ResultSet rs = stmt.executeQuery(sqlComboBox);
-            while (rs.next()) {
-                String names = rs.getString("name");
-                model.addElement(names);
-            }
-            comboMachine.setModel(model);
-        } catch (Exception e) {
-
-        }
+     
         
-        
-    }//GEN-LAST:event_comboMachineFocusGained
+           
+         
+    }//GEN-LAST:event_comboMachine1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -479,22 +479,22 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> comboMachine;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox<String> comboMachine1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JButton login;
+    private javax.swing.JPanel machinePanel;
     private javax.swing.JPanel parentPane;
     private javax.swing.JPasswordField password;
     private javax.swing.JTextField username;
