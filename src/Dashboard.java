@@ -5536,7 +5536,6 @@ RefreshSupplier.doClick();
            
                 }
             
-                System.out.println("Stack: "+dateList);
                 for (String dateString : dateList) {
                     model.addElement(dateString);
             }
