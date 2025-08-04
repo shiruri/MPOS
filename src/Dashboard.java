@@ -3887,7 +3887,7 @@ public class Dashboard extends javax.swing.JFrame {
         LocalDateTime currentDate = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");  
         
-        String filename = "C:/Mpos/Mpos"+selectedDate+"_Folder";
+        String filename = "C:\\Mpos\\Mpos"+selectedDate+"_Folder";
       
 
         repaint();
@@ -3903,7 +3903,11 @@ public class Dashboard extends javax.swing.JFrame {
             currentUser = (CurrentUser) in.readObject();
             file.close();
             in.close();
-       
+            File theDir = new File(filename);
+            if (!theDir.exists()) {
+                theDir.mkdirs();
+            }
+
             AccessPermission ap = new AccessPermission();
 
             //Creating StandardProtectionPolicy object
@@ -3923,7 +3927,6 @@ public class Dashboard extends javax.swing.JFrame {
             //Protecting the document
            
                 PDDocument document = new PDDocument();
-                new File(filename).mkdir();
                 PDDocumentInformation pdd = document.getDocumentInformation();
                 pdd.setAuthor("Mpos");
 
@@ -4101,6 +4104,7 @@ public class Dashboard extends javax.swing.JFrame {
             
             
         } catch (Exception e) {
+            System.out.println("Error: "+e);
         }
 
 
@@ -5609,10 +5613,16 @@ RefreshSupplier.doClick();
     private void OpenFilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFilesActionPerformed
         // TODO add your handling code here:
         try {
-            Desktop.getDesktop().open(new File("C:\\Mpos"));
+            String filename = "C:\\Mpos";
+           File theDir = new File(filename);
+            if (!theDir.exists()) {
+                theDir.mkdirs();
+            }else {
+                Desktop.getDesktop().open(theDir);
+            }
 
         } catch (Exception e) {
-            
+            System.out.println("Error: "+e);
         }
 
     }//GEN-LAST:event_OpenFilesActionPerformed
@@ -5880,11 +5890,15 @@ RefreshSupplier.doClick();
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         try {
-              File file = new File("mpos_manual_v1.pdf");
-               String path = file.getAbsolutePath();
+              String filename = "mpos_manual_v1.pdf";
+                File theDir = new File(filename);
+               String path = theDir.getAbsolutePath();
+                File fileToOpen = new File(path);
+                  
          
-                
-                        Desktop.getDesktop().open(new File(path));
+                Desktop.getDesktop().open(fileToOpen);
+            
+                       
 
             
          

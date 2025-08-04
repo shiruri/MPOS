@@ -1,3 +1,0 @@
-ID : 1 Password : test - Admin
-ID : 2 Password : test - Employee
-ID : 3 Password : test - Admin
