@@ -4,8 +4,10 @@
  */
 
 import Database.Database;
+import java.awt.Desktop;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -1793,7 +1795,11 @@ public class Machine extends javax.swing.JFrame {
                     int rows = model.getRowCount();
                     LocalDateTime currentDatee = LocalDateTime.now();
                     DateTimeFormatter formats = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                   
+                    String folderName = "C:\\Mpos\\MposReciepts";
+                    File theDir = new File(folderName);
+                    if (!theDir.exists()) {
+                        theDir.mkdirs();
+                    } 
                     String filenamem = "C:\\Mpos\\MposReciepts\\MposReciepts"+ formats.format(currentDatee) + "_"+randString+"_log"+"_.txt";
   
                      
