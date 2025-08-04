@@ -5881,10 +5881,11 @@ RefreshSupplier.doClick();
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         try {
-          
-                String url = "C:\\Mpos\\Mpos_Manual\\mpos_manual_v1.pdf";
+              File file = new File("mpos_manual_v1.pdf");
+               String path = file.getAbsolutePath();
+         
                 
-                        Desktop.getDesktop().open(new File(url));
+                        Desktop.getDesktop().open(new File(path));
 
             
          
